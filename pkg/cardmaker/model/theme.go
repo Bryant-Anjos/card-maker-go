@@ -23,6 +23,14 @@ type Element struct {
 	Icon  string        `json:"icon"`
 }
 
+// Variant is an alternative card layout, such as full art, with its own
+// template. Cards opt into it with their variant field.
+type Variant struct {
+	ID       string        `json:"id"`
+	Label    LocalizedText `json:"label,omitempty"`
+	Template string        `json:"template"`
+}
+
 // Theme is the visual definition of a card set. All paths are relative to the
 // theme directory. Rarities and elements are data, not code, so any game can
 // define its own.
@@ -36,6 +44,7 @@ type Theme struct {
 	Back          string    `json:"back,omitempty"`
 	Rarities      []Rarity  `json:"rarities"`
 	Elements      []Element `json:"elements,omitempty"`
+	Variants      []Variant `json:"variants,omitempty"`
 }
 
 // Rarity looks up a rarity by id.
@@ -60,6 +69,29 @@ func (t Theme) Element(id string) (Element, bool) {
 	return Element{}, false
 }
 
+// Variant looks up a variant by id.
+func (t Theme) Variant(id string) (Variant, bool) {
+	for _, v := range t.Variants {
+		if v.ID == id {
+			return v, true
+		}
+	}
+
+	return Variant{}, false
+}
+
+// TemplateFor returns the card template of a variant; the empty variant is
+// the standard layout.
+func (t Theme) TemplateFor(variant string) (string, bool) {
+	if variant == "" {
+		return t.Template, true
+	}
+
+	v, ok := t.Variant(variant)
+
+	return v.Template, ok
+}
+
 // Validate reports every structural problem of the theme.
 func (t Theme) Validate() error {
 	var p problems
@@ -79,6 +111,7 @@ func (t Theme) Validate() error {
 
 	p = append(p, t.raritiesProblems()...)
 	p = append(p, t.elementsProblems()...)
+	p = append(p, t.variantsProblems()...)
 
 	return p.err()
 }
@@ -125,6 +158,26 @@ func (t Theme) elementsProblems() problems {
 
 		checkRelativePath(&p, prefix+".icon", e.Icon)
 		p = append(p, e.Label.validate(prefix+".label", false)...)
+	}
+
+	return p
+}
+
+func (t Theme) variantsProblems() problems {
+	var p problems
+
+	seen := make(map[string]bool, len(t.Variants))
+	for i, v := range t.Variants {
+		prefix := fmt.Sprintf("variants[%d]", i)
+
+		checkIdentifier(&p, prefix+".id", v.ID)
+		if seen[v.ID] {
+			p.addf(prefix+".id", "duplicate id %q", v.ID)
+		}
+		seen[v.ID] = true
+
+		checkRelativePath(&p, prefix+".template", v.Template)
+		p = append(p, v.Label.validate(prefix+".label", false)...)
 	}
 
 	return p

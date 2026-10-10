@@ -15,6 +15,7 @@ type ResolvedCard struct {
 	Number      int
 	Rarity      string
 	Element     string
+	Variant     string
 	Name        string
 	Description string
 	Art         string
@@ -52,6 +53,7 @@ func (r Resolver) Card(c model.Card) (ResolvedCard, error) {
 		Number:      c.Number,
 		Rarity:      c.Rarity,
 		Element:     c.Element,
+		Variant:     c.Variant,
 		Name:        name,
 		Description: description,
 		Art:         c.Art,

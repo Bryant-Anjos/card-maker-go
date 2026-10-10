@@ -35,27 +35,22 @@ const (
 	maxMeanDiffTolerant = 1.0
 )
 
-var goldenFiles = []string{
-	"cards/vulpin.png", "cards/cervallis.png", "cards/lunaris.png",
-	"cards/aureon.png", "cards/drakarion.png", "back.png",
+// goldenSets maps each sample cards file to the images checked against goldens.
+var goldenSets = []struct {
+	cards string
+	files []string
+}{
+	{"cards.json", []string{
+		"cards/vulpin.png", "cards/cervallis.png", "cards/lunaris.png",
+		"cards/aureon.png", "cards/drakarion.png", "back.png",
+	}},
+	{"variants.json", []string{"cards/lunaris-fullart.png", "cards/drakarion-fullart.png"}},
 }
 
 // TestDefaultThemeGolden renders the sample cards with the default theme and
 // compares them with the reviewed golden images.
 func TestDefaultThemeGolden(t *testing.T) {
 	r := newRenderer(t)
-	out := t.TempDir()
-
-	_, err := pipeline.Run(context.Background(), pipeline.Options{
-		CardsFile: repoRoot + "/testdata/cards/cards.json",
-		ThemeDir:  repoRoot + "/themes/default",
-		OutDir:    out,
-		Locale:    "pt-BR",
-		Scales:    []int{1},
-	}, r)
-	if err != nil {
-		t.Fatalf("build: %v", err)
-	}
 
 	if *update {
 		if err := os.WriteFile(rendererFile, []byte(r.Version()+"\n"), 0o644); err != nil {
@@ -67,26 +62,44 @@ func TestDefaultThemeGolden(t *testing.T) {
 		t.Logf("goldens were made by %q, this is %q: comparing with tolerance only", goldenRenderer(t), r.Version())
 	}
 
-	for _, name := range goldenFiles {
-		t.Run(name, func(t *testing.T) {
-			actualPath := filepath.Join(out, "pt-BR", filepath.FromSlash(name))
-			goldenPath := filepath.Join(goldenDir, filepath.FromSlash(name))
+	for _, set := range goldenSets {
+		out := t.TempDir()
+		_, err := pipeline.Run(context.Background(), pipeline.Options{
+			CardsFile: repoRoot + "/testdata/cards/" + set.cards,
+			ThemeDir:  repoRoot + "/themes/default",
+			OutDir:    out,
+			Locale:    "pt-BR",
+			Scales:    []int{1},
+		}, r)
+		if err != nil {
+			t.Fatalf("build %s: %v", set.cards, err)
+		}
 
-			if *update {
-				copyFile(t, actualPath, goldenPath)
-				return
-			}
+		for _, name := range set.files {
+			t.Run(name, func(t *testing.T) {
+				checkGolden(t, filepath.Join(out, "pt-BR", filepath.FromSlash(name)), name, strict)
+			})
+		}
+	}
+}
 
-			stats := compare(t, readPNG(t, goldenPath), readPNG(t, actualPath))
-			switch {
-			case strict && stats.changedPixels > 0:
-				t.Errorf("%d pixels differ from the golden; actual image kept at %s (run with -update if intended)",
-					stats.changedPixels, keep(t, actualPath, name))
-			case !strict && stats.meanDiff > maxMeanDiffTolerant:
-				t.Errorf("mean difference %.2f exceeds %.2f; actual image kept at %s (run with -update if intended)",
-					stats.meanDiff, maxMeanDiffTolerant, keep(t, actualPath, name))
-			}
-		})
+func checkGolden(t *testing.T, actualPath, name string, strict bool) {
+	t.Helper()
+
+	goldenPath := filepath.Join(goldenDir, filepath.FromSlash(name))
+	if *update {
+		copyFile(t, actualPath, goldenPath)
+		return
+	}
+
+	stats := compare(t, readPNG(t, goldenPath), readPNG(t, actualPath))
+	switch {
+	case strict && stats.changedPixels > 0:
+		t.Errorf("%d pixels differ from the golden; actual image kept at %s (run with -update if intended)",
+			stats.changedPixels, keep(t, actualPath, name))
+	case !strict && stats.meanDiff > maxMeanDiffTolerant:
+		t.Errorf("mean difference %.2f exceeds %.2f; actual image kept at %s (run with -update if intended)",
+			stats.meanDiff, maxMeanDiffTolerant, keep(t, actualPath, name))
 	}
 }
 

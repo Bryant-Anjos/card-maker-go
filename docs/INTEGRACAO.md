@@ -100,6 +100,8 @@ for _, card := range manifest.Cards {
 
 - **Não construa caminhos por convenção**; use o `path` do manifest.
 - **Ordem**: `cards[]` segue a ordem do arquivo de cartas, útil para listar a coleção por número.
+- **Variantes**: `cards[].variant` (ex.: `fullart`) permite filtrar ou destacar versões especiais
+  (`manifest.cards.filter((card) => card.variant === "fullart")`). A imagem já vem com o layout certo.
 - **Cache no cliente**: os nomes dos arquivos não têm hash de conteúdo. Ao republicar, invalide o cache
   do CDN ou publique em um diretório novo por versão do conteúdo.
 - **Validação no editor**: coloque `"$schema"` apontando para `schema/*.schema.json` nos seus arquivos de

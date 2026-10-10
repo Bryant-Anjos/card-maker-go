@@ -145,6 +145,7 @@ func (b *build) manifest(cardImages [][]model.Image, backImages []model.Image) m
 			Number:      input.card.Number,
 			Rarity:      input.card.Rarity,
 			Element:     input.card.Element,
+			Variant:     input.card.Variant,
 			Name:        input.card.Name,
 			Description: input.card.Description,
 			Images:      cardImages[i],

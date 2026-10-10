@@ -75,12 +75,15 @@ func TestResolverCard(t *testing.T) {
 func TestResolverCardKeepsNonTextFields(t *testing.T) {
 	resolver, _ := i18n.NewResolver("pt-BR", "pt-BR")
 
-	got, err := resolver.Card(card("a", model.LocalizedText{"pt-BR": "A"}, nil))
+	input := card("a", model.LocalizedText{"pt-BR": "A"}, nil)
+	input.Variant = "fullart"
+
+	got, err := resolver.Card(input)
 
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := i18n.ResolvedCard{ID: "a", Number: 7, Rarity: "rare", Element: "fire", Name: "A", Art: "art/a.png"}
+	want := i18n.ResolvedCard{ID: "a", Number: 7, Rarity: "rare", Element: "fire", Variant: "fullart", Name: "A", Art: "art/a.png"}
 	if got != want {
 		t.Errorf("got %+v, want %+v", got, want)
 	}

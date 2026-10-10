@@ -46,12 +46,21 @@ exatamente os mesmos documentos.
 | `number` | não | Número da coleção (inteiro ≥ 0). Omitido ou `0` significa sem número. |
 | `rarity` | sim | Id de uma raridade **definida no tema**. |
 | `element` | não | Id de um elemento **definido no tema**. |
+| `variant` | não | Id de uma variante de layout **definida no tema** (ex.: `fullart`). Omitido = layout padrão. |
 | `name` | sim | Texto localizado, com ao menos um texto não vazio. |
 | `description` | não | Texto localizado. |
 | `art` | sim | Caminho da ilustração **relativo à pasta do `cards.json`**. PNG, JPEG ou WebP. |
 
-Validações além do schema: ids únicos, raridade e elemento existentes no tema, arte existente e
-decodificável, e `name` disponível no locale pedido (ou no locale de fallback).
+Validações além do schema: ids únicos, raridade, elemento e variante existentes no tema, arte existente
+e decodificável, e `name` disponível no locale pedido (ou no locale de fallback).
+
+**Variantes** (como full art) são cartas próprias na coleção: cada versão tem seu `id`, sua arte e,
+normalmente, seu `number`. Exemplo de uma versão full art do mesmo personagem:
+
+```json
+{ "id": "lunaris-fullart", "number": 132, "rarity": "rare", "element": "dark", "variant": "fullart",
+  "name": { "pt-BR": "Lunaris" }, "art": "art/lunaris-fullart.png" }
+```
 
 ## Entrada 2: tema (`theme.json`)
 
@@ -72,6 +81,9 @@ jogo pode ter 3 ou 8 raridades sem tocar no programa.
   ],
   "elements": [
     { "id": "fire", "label": { "pt-BR": "Fogo" }, "icon": "icons/fire.svg" }
+  ],
+  "variants": [
+    { "id": "fullart", "label": { "pt-BR": "Arte completa" }, "template": "fullart.html.tmpl" }
   ]
 }
 ```
@@ -85,6 +97,7 @@ jogo pode ter 3 ou 8 raridades sem tocar no programa.
 | `back` | não | Template do verso. Sem ele, nenhum verso é gerado. |
 | `rarities[]` | sim (≥ 1) | `id`, `color` (`#rrggbb`), `frame` (arquivo) e `label` opcional. |
 | `elements[]` | não | `id`, `icon` (arquivo) e `label` opcional. |
+| `variants[]` | não | Layouts alternativos: `id`, `template` (arquivo) e `label` opcional. Cartas sem `variant` usam `template`. |
 
 Todos os arquivos citados precisam existir na pasta do tema; o carregamento lista de uma vez todos
 os que faltam. Os dados disponíveis dentro dos templates e as regras de renderização estão no
@@ -139,6 +152,7 @@ out/pt-BR/
 | `theme`, `locale`, `size` | De que tema, idioma e tamanho base vieram as imagens. |
 | `cards[]` | Na **mesma ordem** do arquivo de cartas. |
 | `cards[].name`, `description` | **Já resolvidos** para o locale: quem consome não precisa conhecer i18n. |
+| `cards[].variant` | Variante de layout (ex.: `fullart`); ausente no layout padrão. |
 | `cards[].images[]` | Uma entrada por escala e formato (`png` ou `webp`). |
 | `back[]` | Imagens do verso; ausente se o tema não define verso. |
 

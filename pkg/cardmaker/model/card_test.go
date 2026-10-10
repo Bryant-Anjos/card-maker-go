@@ -35,6 +35,8 @@ func TestCardValidate(t *testing.T) {
 		{"missing name", func(c *model.Card) { c.Name = nil }, "name"},
 		{"blank name text", func(c *model.Card) { c.Name = model.LocalizedText{"pt-BR": "  "} }, "name"},
 		{"invalid locale code", func(c *model.Card) { c.Name = model.LocalizedText{"português": "Vulpin"} }, "locale"},
+		{"valid variant", func(c *model.Card) { c.Variant = "fullart" }, ""},
+		{"invalid variant id", func(c *model.Card) { c.Variant = "Full Art" }, "variant"},
 		{"empty art", func(c *model.Card) { c.Art = "" }, "art"},
 		{"absolute art path", func(c *model.Card) { c.Art = "/etc/passwd" }, "art"},
 		{"art path with dot segment", func(c *model.Card) { c.Art = "art/./vulpin.png" }, "art"},

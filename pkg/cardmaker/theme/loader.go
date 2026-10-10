@@ -73,6 +73,9 @@ func references(t model.Theme) []reference {
 	for i, e := range t.Elements {
 		refs = append(refs, reference{fmt.Sprintf("elements[%d].icon", i), e.Icon})
 	}
+	for i, v := range t.Variants {
+		refs = append(refs, reference{fmt.Sprintf("variants[%d].template", i), v.Template})
+	}
 
 	return refs
 }

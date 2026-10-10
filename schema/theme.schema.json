@@ -86,6 +86,29 @@
           }
         }
       }
+    },
+    "variants": {
+      "type": "array",
+      "description": "Alternative card layouts, each with its own template. Cards opt in with their variant field.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "template"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "defs.schema.json#/$defs/identifier"
+          },
+          "label": {
+            "$ref": "defs.schema.json#/$defs/localizedText"
+          },
+          "template": {
+            "$ref": "defs.schema.json#/$defs/relativePath"
+          }
+        }
+      }
     }
   }
 }

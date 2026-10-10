@@ -2,13 +2,15 @@ package model
 
 import "fmt"
 
-// Card is the input data for a single card. Rarity and Element are identifiers
-// that must exist in the theme used to render it.
+// Card is the input data for a single card. Rarity, Element and Variant are
+// identifiers that must exist in the theme used to render it. An empty Variant
+// means the theme's standard layout.
 type Card struct {
 	ID          string        `json:"id"`
 	Number      int           `json:"number,omitempty"`
 	Rarity      string        `json:"rarity"`
 	Element     string        `json:"element,omitempty"`
+	Variant     string        `json:"variant,omitempty"`
 	Name        LocalizedText `json:"name"`
 	Description LocalizedText `json:"description,omitempty"`
 	Art         string        `json:"art"`
@@ -31,6 +33,9 @@ func (c Card) problems() problems {
 	checkIdentifier(&p, "rarity", c.Rarity)
 	if c.Element != "" {
 		checkIdentifier(&p, "element", c.Element)
+	}
+	if c.Variant != "" {
+		checkIdentifier(&p, "variant", c.Variant)
 	}
 	p = append(p, c.Name.validate("name", true)...)
 	p = append(p, c.Description.validate("description", false)...)

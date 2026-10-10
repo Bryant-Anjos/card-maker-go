@@ -13,6 +13,7 @@
       "number": 1,
       "rarity": "common",
       "element": "beast",
+      "variant": "fullart",
       "name": "Vulpin",
       "description": "Pequena criatura curiosa que vive em florestas tranquilas.",
       "images": [

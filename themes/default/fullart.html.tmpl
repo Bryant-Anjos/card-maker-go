@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="{{.Stylesheet}}">
+</head>
+<body>
+  <!-- Full art: the artwork fills the whole frame window and the texts sit on
+       a translucent panel over it. Frame, ornaments and glow are the same as
+       the standard layout, so the variant works for every rarity. -->
+  <main class="card variant-fullart rarity-{{.Rarity.ID}}" style="--c: {{.Rarity.Color}}">
+    <div class="art"><img src="{{.ArtURL}}" alt=""></div>
+    <div class="holo" aria-hidden="true"></div>
+
+    <section class="panel">
+      <header class="title">
+        <h1 class="name">{{.Card.Name}}</h1>
+        {{- if .Element}}
+        <span class="element element-{{.Element.ID}}">{{inline .Element.Icon}}</span>
+        {{- end}}
+      </header>
+      {{- if .Card.Description}}
+      <p class="description">{{.Card.Description}}</p>
+      {{- end}}
+    </section>
+
+    {{inline "frame.svg"}}
+
+    <div class="ornaments">{{inline .Rarity.Frame}}</div>
+
+    {{- if .Card.Number}}
+    <div class="number">{{printf "%03d" .Card.Number}}</div>
+    {{- end}}
+  </main>
+</body>
+</html>

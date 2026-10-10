@@ -63,6 +63,10 @@
           "element": {
             "$ref": "defs.schema.json#/$defs/identifier"
           },
+          "variant": {
+            "$ref": "defs.schema.json#/$defs/identifier",
+            "description": "Layout variant of the card; absent for the standard layout."
+          },
           "name": {
             "type": "string",
             "minLength": 1

@@ -47,6 +47,8 @@ func TestManifestValidate(t *testing.T) {
 		{"image path escapes", func(m *model.Manifest) { m.Cards[0].Images[0].Path = "../x.png" }, "path"},
 		{"zero image width", func(m *model.Manifest) { m.Cards[0].Images[1].Width = 0 }, "width"},
 		{"invalid back", func(m *model.Manifest) { m.Back[0].Path = "" }, "back[0].path"},
+		{"valid variant", func(m *model.Manifest) { m.Cards[0].Variant = "fullart" }, ""},
+		{"invalid variant", func(m *model.Manifest) { m.Cards[0].Variant = "Full Art" }, "variant"},
 	}
 
 	for _, tt := range tests {

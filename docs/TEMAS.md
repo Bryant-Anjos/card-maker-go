@@ -6,7 +6,8 @@ que aparece na carta é decidido pelo tema.
 
 ## Como uma carta vira imagem
 
-1. O template do tema (`template` no `theme.json`) é executado com os dados da carta, usando
+1. O template do tema (`template` no `theme.json`, ou o `template` da variante quando a carta tem
+   `variant`) é executado com os dados da carta, usando
    [`html/template`](https://pkg.go.dev/html/template) do Go (os textos são escapados automaticamente).
 2. A página resultante é aberta em um Chrome/Chromium headless, com viewport do tamanho do tema
    (`size`) e `deviceScaleFactor` igual à escala pedida. Escreva o CSS sempre em pixels do tamanho
@@ -31,6 +32,7 @@ arquivos com esses nomes.
 | `.Card.Name` | texto já no locale da saída | `<h1>{{.Card.Name}}</h1>` |
 | `.Card.Description` | texto já no locale (pode ser vazio) | `{{if .Card.Description}}…{{end}}` |
 | `.Card.Rarity`, `.Card.Element` | ids | |
+| `.Card.Variant` | id da variante, vazio no layout padrão | `class="variant-{{.Card.Variant}}"` |
 | `.Rarity.ID`, `.Rarity.Color`, `.Rarity.Frame` | a raridade como definida no tema | `style="--c: {{.Rarity.Color}}"` |
 | `.Element` | elemento do tema, ou **nulo** se a carta não tem | `{{if .Element}}{{inline .Element.Icon}}{{end}}` |
 | `.Size.Width`, `.Size.Height` | tamanho base em px | |
@@ -45,6 +47,13 @@ O template do verso (`back`) recebe só `.Size` e `.Stylesheet`.
   estilizado pelo CSS da página (por exemplo, usar variáveis CSS de cor). O caminho precisa estar dentro
   do tema.
 - Todas as funções padrão do `html/template`: `printf`, `if`, `with`, `eq`, `len`, etc.
+
+## Variantes de layout
+
+Uma variante é um layout alternativo com template próprio, declarado em `variants` no `theme.json`. A
+carta escolhe com `"variant": "<id>"`. Raridades e elementos continuam valendo, então uma variante bem
+escrita funciona para todas as raridades. Para não duplicar código entre layouts, coloque o que é comum
+em arquivos e use `{{inline "arquivo.svg"}}` nos dois templates (o tema `default` faz isso com `frame.svg`).
 
 ## Boas práticas
 
@@ -73,6 +82,8 @@ Reproduz o [design de referência](reference/card-design-reference.png).
 | Ícones | `icons/<elemento>.svg`, 48×48, cada um com sua própria cor. |
 | Fontes | Lora (nome) e Source Sans 3 (textos), licença OFL, em `fonts/` com as licenças. |
 | Verso | `back.html.tmpl`: fundo azul-marinho, moldura dourada e rosa dos ventos. |
+| Moldura compartilhada | `frame.svg` (faixa metálica e filetes), inserida pelos dois layouts. |
+| Variante `fullart` | `fullart.html.tmpl`: a arte ocupa toda a janela da moldura (682×982), o texto fica num painel translúcido sobre a arte e um brilho holográfico na cor da raridade marca a versão especial. Moldura, ornamentos, brilho e gema são os da raridade, então serve para todas. **Arte recomendada: retrato, proporção ≈ 0,69 (ex.: 750×1050 ou 1500×2100 para 2x)**; arte quadrada é ampliada e cortada nas laterais. |
 
 Diferença em relação à referência: as cartas da imagem de referência são mais estreitas (≈ 3:5); o tema
 usa 5:7, que é o padrão do plano. Mudar a proporção exige ajustar as coordenadas de layout em

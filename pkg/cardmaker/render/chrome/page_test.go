@@ -17,13 +17,15 @@ func pageTheme(cardTemplate string) theme.Theme {
 			Template: "card.html.tmpl", Stylesheet: "style.css", Back: "back.html.tmpl",
 			Rarities: []model.Rarity{{ID: "rare", Color: "#3b82f6", Frame: "frames/rare.svg"}},
 			Elements: []model.Element{{ID: "fire", Icon: "icons/fire.svg"}},
+			Variants: []model.Variant{{ID: "fullart", Template: "fullart.html.tmpl"}},
 		},
 		FS: fstest.MapFS{
-			"card.html.tmpl":  {Data: []byte(cardTemplate)},
-			"back.html.tmpl":  {Data: []byte(`<div class="back" style="width:{{.Size.Width}}px">{{.Stylesheet}}</div>`)},
-			"style.css":       {Data: []byte("body{}")},
-			"frames/rare.svg": {Data: []byte(`<svg id="frame"/>`)},
-			"icons/fire.svg":  {Data: []byte(`<svg id="fire"/>`)},
+			"fullart.html.tmpl": {Data: []byte(`full:{{.Card.Variant}}:{{.Card.Name}}`)},
+			"card.html.tmpl":    {Data: []byte(cardTemplate)},
+			"back.html.tmpl":    {Data: []byte(`<div class="back" style="width:{{.Size.Width}}px">{{.Stylesheet}}</div>`)},
+			"style.css":         {Data: []byte("body{}")},
+			"frames/rare.svg":   {Data: []byte(`<svg id="frame"/>`)},
+			"icons/fire.svg":    {Data: []byte(`<svg id="fire"/>`)},
 		},
 	}
 }
@@ -84,6 +86,7 @@ func TestCardPageErrors(t *testing.T) {
 		{"inline missing file", `{{inline "icons/none.svg"}}`, nil, "icons/none.svg"},
 		{"unknown rarity", `x`, func(_ *theme.Theme, c *i18n.ResolvedCard) { c.Rarity = "mythic" }, "mythic"},
 		{"unknown element", `x`, func(_ *theme.Theme, c *i18n.ResolvedCard) { c.Element = "void" }, "void"},
+		{"unknown variant", `x`, func(_ *theme.Theme, c *i18n.ResolvedCard) { c.Variant = "etched" }, "etched"},
 	}
 
 	for _, tt := range tests {
@@ -116,5 +119,19 @@ func TestBackPage(t *testing.T) {
 	th.Back = ""
 	if _, err := backPage(th); err == nil {
 		t.Error("expected error for theme without back")
+	}
+}
+
+func TestCardPageUsesVariantTemplate(t *testing.T) {
+	card := resolvedCard()
+	card.Variant = "fullart"
+
+	page, err := cardPage(pageTheme(`standard`), card)
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if string(page) != "full:fullart:Lunaris &lt;script&gt;" {
+		t.Errorf("page = %q, want the fullart template", page)
 	}
 }

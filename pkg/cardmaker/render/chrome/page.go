@@ -53,6 +53,11 @@ func cardPage(th theme.Theme, card i18n.ResolvedCard) ([]byte, error) {
 		element = &e
 	}
 
+	template, ok := th.TemplateFor(card.Variant)
+	if !ok {
+		return nil, fmt.Errorf("card %q: unknown variant %q", card.ID, card.Variant)
+	}
+
 	data := CardData{
 		Card:       card,
 		Rarity:     rarity,
@@ -62,7 +67,7 @@ func cardPage(th theme.Theme, card i18n.ResolvedCard) ([]byte, error) {
 		Stylesheet: th.Stylesheet,
 	}
 
-	return executeTemplate(th.FS, th.Template, data)
+	return executeTemplate(th.FS, template, data)
 }
 
 func backPage(th theme.Theme) ([]byte, error) {

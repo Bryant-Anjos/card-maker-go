@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schema/cards.schema.json",
+  "schemaVersion": 1,
+  "cards": [
+    {
+      "id": "lunaris-fullart",
+      "number": 132,
+      "rarity": "rare",
+      "element": "dark",
+      "variant": "fullart",
+      "name": { "pt-BR": "Lunaris" },
+      "description": { "pt-BR": "Sua pelagem brilha com a luz da lua, guiando viajantes perdidos." },
+      "art": "art/lunaris.png"
+    },
+    {
+      "id": "drakarion-fullart",
+      "number": 199,
+      "rarity": "legendary",
+      "element": "fire",
+      "variant": "fullart",
+      "name": { "pt-BR": "Drakarion" },
+      "description": { "pt-BR": "Uma lenda viva, capaz de moldar o céu e a terra com seu poder." },
+      "art": "art/drakarion.png"
+    }
+  ]
+}

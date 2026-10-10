@@ -64,3 +64,31 @@ func TestValidateAgainstThemeWithoutElements(t *testing.T) {
 		t.Fatalf("error = %v, want it to flag the element and say the theme has no elements", err)
 	}
 }
+
+func TestValidateAgainstThemeVariants(t *testing.T) {
+	theme := validTheme() // variants: fullart
+	withVariant := func(variant string) model.CardSet {
+		card := validCard()
+		card.Element = "fire"
+		card.Variant = variant
+		return model.CardSet{SchemaVersion: 1, Cards: []model.Card{card}}
+	}
+
+	if err := withVariant("fullart").ValidateAgainst(theme); err != nil {
+		t.Errorf("known variant rejected: %v", err)
+	}
+	if err := withVariant("").ValidateAgainst(theme); err != nil {
+		t.Errorf("default variant rejected: %v", err)
+	}
+
+	err := withVariant("etched").ValidateAgainst(theme)
+	if err == nil || !strings.Contains(err.Error(), "cards[0].variant") || !strings.Contains(err.Error(), "fullart") {
+		t.Errorf("error = %v, want unknown variant listing the theme variants", err)
+	}
+
+	theme.Variants = nil
+	err = withVariant("fullart").ValidateAgainst(theme)
+	if err == nil || !strings.Contains(err.Error(), "no variants") {
+		t.Errorf("error = %v, want a hint that the theme has no variants", err)
+	}
+}

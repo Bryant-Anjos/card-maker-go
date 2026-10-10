@@ -264,6 +264,26 @@ func TestRunDeterministicAcrossConcurrency(t *testing.T) {
 	}
 }
 
+func TestRunCardVariant(t *testing.T) {
+	ws := newWorkspace(t)
+	fake := render.NewFake()
+	mustRun(t, ws.options(), fake)
+	before := fake.CardCalls()
+
+	replaceInFile(t, ws.cardsFile, `"rarity": "rare",`, `"rarity": "rare", "variant": "fullart",`)
+	result := mustRun(t, ws.options(), fake)
+
+	if got := result.Manifest.Cards[2]; got.ID != "lunaris" || got.Variant != "fullart" {
+		t.Errorf("manifest card = %+v, want lunaris with variant fullart", got)
+	}
+	if result.Manifest.Cards[0].Variant != "" {
+		t.Errorf("standard card has variant %q", result.Manifest.Cards[0].Variant)
+	}
+	if got := fake.CardCalls() - before; got != 2 {
+		t.Errorf("rendered %d card images, want 2 (only the card whose variant changed)", got)
+	}
+}
+
 func TestRunThemeWithoutBack(t *testing.T) {
 	ws := newWorkspace(t)
 	replaceInFile(t, filepath.Join(ws.themeDir, "theme.json"), `"back": "back.html.tmpl",`, "")
@@ -288,6 +308,9 @@ func TestRunFailsBeforeRenderingOnBadInput(t *testing.T) {
 		{"unknown rarity", func(t *testing.T, ws workspace) {
 			replaceInFile(t, ws.cardsFile, `"rarity": "rare"`, `"rarity": "mythic"`)
 		}, []string{"cards[2].rarity", "mythic"}},
+		{"unknown variant", func(t *testing.T, ws workspace) {
+			replaceInFile(t, ws.cardsFile, `"rarity": "rare",`, `"rarity": "rare", "variant": "etched",`)
+		}, []string{"cards[2].variant", "etched"}},
 		{"unknown element", func(t *testing.T, ws workspace) {
 			replaceInFile(t, ws.cardsFile, `"element": "fire"`, `"element": "void"`)
 		}, []string{"cards[4].element", "void"}},

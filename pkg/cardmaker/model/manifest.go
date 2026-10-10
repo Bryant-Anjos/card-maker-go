@@ -21,6 +21,7 @@ type ManifestCard struct {
 	Number      int     `json:"number,omitempty"`
 	Rarity      string  `json:"rarity"`
 	Element     string  `json:"element,omitempty"`
+	Variant     string  `json:"variant,omitempty"`
 	Name        string  `json:"name"`
 	Description string  `json:"description,omitempty"`
 	Images      []Image `json:"images"`
@@ -91,6 +92,9 @@ func (c ManifestCard) problems() problems {
 
 	checkIdentifier(&p, "id", c.ID)
 	checkIdentifier(&p, "rarity", c.Rarity)
+	if c.Variant != "" {
+		checkIdentifier(&p, "variant", c.Variant)
+	}
 	if c.Name == "" {
 		p.addf("name", "is required")
 	}

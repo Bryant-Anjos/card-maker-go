@@ -21,5 +21,8 @@
     { "id": "wind", "label": { "pt-BR": "Vento" }, "icon": "icons/wind.svg" },
     { "id": "light", "label": { "pt-BR": "Luz" }, "icon": "icons/light.svg" },
     { "id": "dark", "label": { "pt-BR": "Trevas" }, "icon": "icons/dark.svg" }
+  ],
+  "variants": [
+    { "id": "fullart", "label": { "pt-BR": "Arte completa" }, "template": "fullart.html.tmpl" }
   ]
 }

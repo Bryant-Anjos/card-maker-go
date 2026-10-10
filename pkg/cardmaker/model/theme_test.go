@@ -22,6 +22,9 @@ func validTheme() model.Theme {
 		Elements: []model.Element{
 			{ID: "fire", Icon: "icons/fire.svg", Label: model.LocalizedText{"pt-BR": "Fogo"}},
 		},
+		Variants: []model.Variant{
+			{ID: "fullart", Template: "fullart.html.tmpl", Label: model.LocalizedText{"pt-BR": "Arte completa"}},
+		},
 	}
 }
 
@@ -48,6 +51,11 @@ func TestThemeValidate(t *testing.T) {
 		{"rarity frame escapes", func(th *model.Theme) { th.Rarities[0].Frame = "../../x.svg" }, "frame"},
 		{"duplicate element", func(th *model.Theme) { th.Elements = append(th.Elements, th.Elements[0]) }, "duplicate"},
 		{"element icon missing", func(th *model.Theme) { th.Elements[0].Icon = "" }, "icon"},
+		{"valid without variants", func(th *model.Theme) { th.Variants = nil }, ""},
+		{"bad variant id", func(th *model.Theme) { th.Variants[0].ID = "Full Art" }, "variants[0].id"},
+		{"duplicate variant", func(th *model.Theme) { th.Variants = append(th.Variants, th.Variants[0]) }, "duplicate"},
+		{"variant template escapes", func(th *model.Theme) { th.Variants[0].Template = "../x.tmpl" }, "variants[0].template"},
+		{"variant template missing", func(th *model.Theme) { th.Variants[0].Template = "" }, "variants[0].template"},
 	}
 
 	for _, tt := range tests {
@@ -74,6 +82,27 @@ func TestThemeLookups(t *testing.T) {
 	}
 	if _, ok := theme.Element("void"); ok {
 		t.Error("Element(void) should not exist")
+	}
+}
+
+func TestThemeTemplateFor(t *testing.T) {
+	theme := validTheme()
+
+	tests := []struct {
+		variant string
+		want    string
+		wantOK  bool
+	}{
+		{"", "card.html.tmpl", true},
+		{"fullart", "fullart.html.tmpl", true},
+		{"etched", "", false},
+	}
+
+	for _, tt := range tests {
+		got, ok := theme.TemplateFor(tt.variant)
+		if got != tt.want || ok != tt.wantOK {
+			t.Errorf("TemplateFor(%q) = (%q, %v), want (%q, %v)", tt.variant, got, ok, tt.want, tt.wantOK)
+		}
 	}
 }
 

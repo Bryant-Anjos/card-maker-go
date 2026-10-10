@@ -19,13 +19,15 @@ const themeJSON = `{
   "stylesheet": "style.css",
   "back": "back.html.tmpl",
   "rarities": [{"id": "common", "color": "#8b9099", "frame": "frames/common.svg"}],
-  "elements": [{"id": "fire", "icon": "icons/fire.svg"}]
+  "elements": [{"id": "fire", "icon": "icons/fire.svg"}],
+  "variants": [{"id": "fullart", "template": "fullart.html.tmpl"}]
 }`
 
 func completeTheme() fstest.MapFS {
 	return fstest.MapFS{
 		"theme.json":         {Data: []byte(themeJSON)},
 		"card.html.tmpl":     {Data: []byte("<html></html>")},
+		"fullart.html.tmpl":  {Data: []byte("<html></html>")},
 		"style.css":          {Data: []byte("body{}")},
 		"back.html.tmpl":     {Data: []byte("<html></html>")},
 		"frames/common.svg":  {Data: []byte("<svg/>")},
@@ -77,6 +79,7 @@ func TestLoad(t *testing.T) {
 		{"back", "back.html.tmpl", "back"},
 		{"rarity frame", "frames/common.svg", "rarities[0].frame"},
 		{"element icon", "icons/fire.svg", "elements[0].icon"},
+		{"variant template", "fullart.html.tmpl", "variants[0].template"},
 	}
 	for _, tt := range missing {
 		t.Run("missing "+tt.name, func(t *testing.T) {
