@@ -142,7 +142,7 @@ MVP útil = fases 1 a 5.
   - Decisão de contrato: `manifest.back` virou **lista** de imagens (escalas e formatos), como as cartas.
   - Fixtures: tema de teste `testdata/themes/basic` (75×105 para os testes serem rápidos; o WebP em Go puro é lento em tamanho real) e artes placeholder em `testdata/cards/art` (`make testdata-art`).
   - Limitações conhecidas: WebP é **lossless** (encoder em Go puro); arquivos órfãos de cartas removidas não são apagados; a proporção da arte não é validada (o template deve usar `object-fit: cover`). Cobertura total 91,5%, sem races.
-- [ ] Fase 6 — Docs
+- [x] **Fase 6 — Docs**: [CONTRATO.md](CONTRATO.md) (entradas, saída, regras, versionamento, limitações) e [INTEGRACAO.md](INTEGRACAO.md) (receitas para web, nativo/engines e Go; os snippets JS foram executados contra um manifest real e o de Go é um `Example` verificado pelo `go test`). Ajuste de contrato: os arquivos de cartas, tema e manifest aceitam `"$schema"` opcional para autocompletar no editor. Pendente: documentar as variáveis do template junto com a fase 4.
 - [ ] Fase 7 — API (opcional)
 
 ## 11. Contrato de dados (resumo da fase 2)

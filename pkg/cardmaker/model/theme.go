@@ -27,6 +27,7 @@ type Element struct {
 // theme directory. Rarities and elements are data, not code, so any game can
 // define its own.
 type Theme struct {
+	Schema        string    `json:"$schema,omitempty"` // editor hint, ignored
 	SchemaVersion int       `json:"schemaVersion"`
 	Name          string    `json:"name"`
 	Size          Size      `json:"size"`

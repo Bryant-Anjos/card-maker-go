@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schema/theme.schema.json",
   "schemaVersion": 1,
   "name": "default",
   "size": { "width": 750, "height": 1050 },

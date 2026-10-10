@@ -29,6 +29,7 @@ type ManifestCard struct {
 // Manifest is the output contract consumed by every client platform. Image
 // paths are relative to the directory that contains the manifest.
 type Manifest struct {
+	Schema        string         `json:"$schema,omitempty"` // editor hint, ignored
 	SchemaVersion int            `json:"schemaVersion"`
 	Theme         string         `json:"theme"`
 	Locale        string         `json:"locale"`

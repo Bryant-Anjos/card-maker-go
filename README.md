@@ -3,7 +3,12 @@
 Gerador de cartas agnóstico: recebe dados, imagens e um tema e gera as imagens finais das cartas
 (PNG/WebP) mais um `manifest.json`, para serem usadas por qualquer plataforma.
 
-Plano completo: [docs/PLAN.md](docs/PLAN.md) · Design de referência: [docs/reference/](docs/reference/card-design-reference.png)
+Documentação:
+
+- [docs/CONTRATO.md](docs/CONTRATO.md): formato das cartas, do tema e do manifest (o que outros projetos precisam saber)
+- [docs/INTEGRACAO.md](docs/INTEGRACAO.md): como consumir a saída na web, em apps nativos, engines e Go
+- [docs/PLAN.md](docs/PLAN.md): plano de implementação e progresso
+- [Design de referência](docs/reference/card-design-reference.png)
 
 ## Uso
 

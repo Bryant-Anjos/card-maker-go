@@ -16,6 +16,7 @@ type Card struct {
 
 // CardSet is a versioned collection of cards, the root of a cards data file.
 type CardSet struct {
+	Schema        string `json:"$schema,omitempty"` // editor hint, ignored
 	SchemaVersion int    `json:"schemaVersion"`
 	Cards         []Card `json:"cards"`
 }

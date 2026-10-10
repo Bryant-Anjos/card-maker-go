@@ -13,6 +13,10 @@
   ],
   "additionalProperties": false,
   "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional path or URL of this schema, used by editors for autocompletion. Ignored by the program."
+    },
     "schemaVersion": {
       "const": 1
     },

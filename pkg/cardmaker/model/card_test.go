@@ -185,3 +185,17 @@ func assertErr(t *testing.T, err error, wantSubstr string) {
 		t.Fatalf("error %q does not contain %q", err, wantSubstr)
 	}
 }
+
+func TestParseCardSetAcceptsSchemaHint(t *testing.T) {
+	src := `{"$schema":"../schema/cards.schema.json","schemaVersion":1,"cards":[
+		{"id":"a","rarity":"c","name":{"pt-BR":"A"},"art":"a.png"}]}`
+
+	set, err := model.ParseCardSet(strings.NewReader(src))
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if set.Schema != "../schema/cards.schema.json" {
+		t.Errorf("schema = %q", set.Schema)
+	}
+}
