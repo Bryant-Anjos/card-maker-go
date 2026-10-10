@@ -2,6 +2,7 @@
 
 build:
 	go build -o bin/cardmaker ./cmd/cardmaker
+	go build -o bin/cardmaker-server ./cmd/cardmaker-server
 
 test:
 	go test ./...

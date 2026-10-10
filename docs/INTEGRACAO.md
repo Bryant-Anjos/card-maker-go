@@ -109,8 +109,8 @@ for _, card := range manifest.Cards {
 - **Valide antes de publicar**: `cardmaker validate -cards cards.json -theme themes/default` confere dados,
   tema e artes sem renderizar nada, ideal para CI.
 
-## API HTTP (opcional, futura)
+## API HTTP (cartas sob demanda)
 
-Se um dia for preciso gerar cartas sob demanda (por exemplo, uma ferramenta de edição), a fase 7 do plano
-prevê um `cardmaker-server` com `POST /render` sobre o mesmo núcleo. Hoje não há necessidade: o fluxo de
-build cobre a coleção estática.
+Para gerar uma carta avulsa, como em uma ferramenta de edição ou pré-visualização, o `cardmaker-server`
+expõe `POST /v1/render` sobre o mesmo núcleo: envie os dados da carta e a arte e receba a imagem. Veja o
+[guia da API](API.md). Para a coleção estática, o fluxo de build acima continua sendo o caminho.

@@ -12,6 +12,7 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/i18n"
+	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/imgenc"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/model"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/render"
 )
@@ -282,11 +283,11 @@ func (b *build) renderScales(planned []model.Image, renderScale func(scale int) 
 		if err != nil {
 			return fmt.Errorf("render at %dx: %w", scale, err)
 		}
-		if err := checkPNGSize(pngData, images[0].Width, images[0].Height); err != nil {
+		if err := imgenc.CheckPNGSize(pngData, images[0].Width, images[0].Height); err != nil {
 			return fmt.Errorf("render at %dx: %w", scale, err)
 		}
 
-		encoded, err := encodeAll(pngData, b.opts.Formats)
+		encoded, err := imgenc.EncodeAll(pngData, b.opts.Formats)
 		if err != nil {
 			return err
 		}

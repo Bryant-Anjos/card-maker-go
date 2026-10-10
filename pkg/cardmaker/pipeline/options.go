@@ -9,15 +9,10 @@ import (
 	"slices"
 
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/i18n"
+	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/imgenc"
 )
 
 const defaultConcurrency = 4
-
-// Supported output image formats.
-const (
-	FormatPNG  = "png"
-	FormatWebP = "webp"
-)
 
 // Options configures a build. CardsFile, ThemeDir, OutDir and Locale are
 // required; everything else has a default.
@@ -91,13 +86,13 @@ func normalizeScales(scales []int) ([]int, error) {
 
 func normalizeFormats(formats []string) ([]string, error) {
 	if len(formats) == 0 {
-		return []string{FormatPNG}, nil
+		return []string{imgenc.PNG}, nil
 	}
 
 	var out []string
 	for _, format := range formats {
-		if format != FormatPNG && format != FormatWebP {
-			return nil, fmt.Errorf("unsupported format %q, use %s or %s", format, FormatPNG, FormatWebP)
+		if !imgenc.IsSupported(format) {
+			return nil, fmt.Errorf("unsupported format %q, use %s or %s", format, imgenc.PNG, imgenc.WebP)
 		}
 		if !slices.Contains(out, format) {
 			out = append(out, format)

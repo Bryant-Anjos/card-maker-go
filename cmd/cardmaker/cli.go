@@ -13,8 +13,8 @@ import (
 
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/pipeline"
-	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/render"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/render/chrome"
+	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/renderers"
 )
 
 // Exit codes.
@@ -102,7 +102,7 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 	formats := fs.String("formats", "png", "comma-separated image formats: png, webp")
 	concurrency := fs.Int("concurrency", 0, "cards rendered in parallel (default 4)")
 	force := fs.Bool("force", false, "ignore the cache and render everything")
-	rendererName := fs.String("renderer", "chrome", "renderer: chrome or fake")
+	rendererName := fs.String("renderer", renderers.Chrome, "renderer: chrome or fake")
 	browserPath := fs.String("chrome", "", "browser executable (default: $"+chrome.EnvBrowserPath+", then PATH)")
 
 	if err := fs.Parse(args); err != nil {
@@ -122,7 +122,7 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 	opts.Concurrency = *concurrency
 	opts.Force = *force
 
-	renderer, closeRenderer, err := newRenderer(*rendererName, *browserPath)
+	renderer, closeRenderer, err := renderers.Open(*rendererName, *browserPath)
 	if err != nil {
 		fmt.Fprintln(stderr, err)
 		return exitFailure
@@ -147,23 +147,6 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 		result.OutDir, result.Rendered, result.Skipped)
 
 	return exitOK
-}
-
-// newRenderer builds the named renderer and returns a function that releases
-// its resources (the browser, for chrome).
-func newRenderer(name, browserPath string) (render.Renderer, func() error, error) {
-	switch name {
-	case "fake":
-		return render.NewFake(), func() error { return nil }, nil
-	case "chrome":
-		r, err := chrome.New(chrome.Options{BrowserPath: browserPath})
-		if err != nil {
-			return nil, nil, err
-		}
-		return r, r.Close, nil
-	default:
-		return nil, nil, fmt.Errorf("unknown renderer %q, use chrome or fake", name)
-	}
 }
 
 func parseScales(value string) ([]int, error) {

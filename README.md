@@ -9,6 +9,7 @@ Documentação:
 
 - [docs/CONTRATO.md](docs/CONTRATO.md): formato das cartas, do tema e do manifest (o que outros projetos precisam saber)
 - [docs/INTEGRACAO.md](docs/INTEGRACAO.md): como consumir a saída na web, em apps nativos, engines e Go
+- [docs/API.md](docs/API.md): servidor HTTP para gerar cartas sob demanda (`cardmaker-server`)
 - [docs/TEMAS.md](docs/TEMAS.md): como criar ou alterar um tema (dados do template, boas práticas, tema `default`)
 - [docs/PLAN.md](docs/PLAN.md): plano de implementação e progresso
 - [Design de referência](docs/reference/card-design-reference.png)
@@ -24,6 +25,12 @@ cardmaker build -cards testdata/showcase/cards.json -theme themes/default \
   -out out -locale pt-BR -scales 1,2 -formats png,webp
 ```
 
+Para gerar cartas sob demanda por HTTP, use o `cardmaker-server` (veja [docs/API.md](docs/API.md)):
+
+```bash
+CARDMAKER_API_TOKEN=um-token bin/cardmaker-server -themes themes
+```
+
 A renderização usa um navegador Chromium headless. Ele é procurado em `-chrome <caminho>`, depois na
 variável `CARDMAKER_CHROME` e depois no `PATH` (`chrome-headless-shell`, `chromium`, `google-chrome`,
 `brave-browser`, ...). Reexecutar o `build` só renderiza o que mudou (`-force` ignora o cache);
@@ -36,7 +43,7 @@ variável `CARDMAKER_CHROME` e depois no `PATH` (`chrome-headless-shell`, `chrom
 
 ```bash
 make check   # go vet + go test
-make build   # gera bin/cardmaker
+make build   # gera bin/cardmaker e bin/cardmaker-server
 ```
 
 Requer Go (veja `.tool-versions`) e um Chrome/Chromium para a renderização; os testes que precisam do
