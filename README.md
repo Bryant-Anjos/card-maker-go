@@ -1,5 +1,9 @@
 # Card Maker Go
 
+[![CI](https://github.com/Bryant-Anjos/card-maker-go/actions/workflows/ci.yml/badge.svg)](https://github.com/Bryant-Anjos/card-maker-go/actions/workflows/ci.yml)
+[![Licença: MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-blue.svg)](LICENSE)
+[![Documentação](https://img.shields.io/badge/docs-GitHub%20Pages-indigo.svg)](https://bryant-anjos.github.io/card-maker-go/)
+
 **Gerador de cartas colecionáveis a partir de dados.** Você entrega os dados das cartas, as ilustrações e um
 tema; ele gera as imagens finais (PNG ou WebP) e um `manifest.json` que **qualquer plataforma** consegue usar:
 web, apps nativos, engines de jogo.
@@ -109,7 +113,8 @@ Se não houver navegador à mão, `-renderer fake` gera retângulos coloridos e 
 
 ## Documentação
 
-Tudo está em [`docs/`](docs/README.md). Por onde começar:
+A documentação está publicada em **<https://bryant-anjos.github.io/card-maker-go/>** (com busca) e também em
+[`docs/`](docs/README.md). Por onde começar:
 
 | Quero... | Leia |
 |---|---|
