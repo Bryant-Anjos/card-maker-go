@@ -1,0 +1,97 @@
+{
+  "$schema": "../../schema/cards.schema.json",
+  "schemaVersion": 1,
+  "cards": [
+    {
+      "id": "elemento-beast",
+      "number": 400,
+      "rarity": "common",
+      "element": "beast",
+      "name": {
+        "pt-BR": "Fera"
+      },
+      "description": {
+        "pt-BR": "Elemento fera."
+      },
+      "art": "art/vulpin.png"
+    },
+    {
+      "id": "elemento-fire",
+      "number": 401,
+      "rarity": "legendary",
+      "element": "fire",
+      "name": {
+        "pt-BR": "Fogo"
+      },
+      "description": {
+        "pt-BR": "Elemento fogo."
+      },
+      "art": "art/drakarion.png"
+    },
+    {
+      "id": "elemento-water",
+      "number": 402,
+      "rarity": "rare",
+      "element": "water",
+      "name": {
+        "pt-BR": "Água"
+      },
+      "description": {
+        "pt-BR": "Elemento água."
+      },
+      "art": "art/lunaris.png"
+    },
+    {
+      "id": "elemento-plant",
+      "number": 403,
+      "rarity": "uncommon",
+      "element": "plant",
+      "name": {
+        "pt-BR": "Planta"
+      },
+      "description": {
+        "pt-BR": "Elemento planta."
+      },
+      "art": "art/cervallis.png"
+    },
+    {
+      "id": "elemento-wind",
+      "number": 404,
+      "rarity": "rare",
+      "element": "wind",
+      "name": {
+        "pt-BR": "Vento"
+      },
+      "description": {
+        "pt-BR": "Elemento vento."
+      },
+      "art": "art/aureon.png"
+    },
+    {
+      "id": "elemento-light",
+      "number": 405,
+      "rarity": "epic",
+      "element": "light",
+      "name": {
+        "pt-BR": "Luz"
+      },
+      "description": {
+        "pt-BR": "Elemento luz."
+      },
+      "art": "art/aureon.png"
+    },
+    {
+      "id": "elemento-dark",
+      "number": 406,
+      "rarity": "rare",
+      "element": "dark",
+      "name": {
+        "pt-BR": "Trevas"
+      },
+      "description": {
+        "pt-BR": "Elemento trevas."
+      },
+      "art": "art/lunaris.png"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-.PHONY: build test vet cover check testdata-art theme-frames golden
+.PHONY: build test vet cover check testdata-art theme-frames golden docs-images docs-check
 
 build:
 	go build -o bin/cardmaker ./cmd/cardmaker
@@ -27,3 +27,13 @@ theme-frames:
 # images (and testdata/golden/default/RENDERER) before committing.
 golden:
 	go test ./pkg/cardmaker/render/chrome/ -run Golden -update -count=1
+
+# Re-renders the README/docs illustrations with the real tool (needs a Chromium
+# browser) and records the fingerprint of the sources they came from.
+docs-images:
+	python3 internal/devtools/docimages/make_images.py
+	go run ./internal/devtools/docsourcehash > docs/images/SOURCE_HASH
+
+# Fails when the documentation drifted from the code.
+docs-check:
+	go test -count=1 ./internal/docscheck/

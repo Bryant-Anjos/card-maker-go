@@ -4,6 +4,10 @@ Um tema é uma pasta com um `theme.json` (formato em [CONTRATO.md](CONTRATO.md))
 templates HTML, CSS, fontes, molduras e ícones. O programa não sabe nada de raridades ou elementos: tudo
 que aparece na carta é decidido pelo tema.
 
+![Anatomia de uma carta do tema default](images/anatomia.jpg)
+
+*A carta do tema `default` e as peças que o template compõe.*
+
 ## Como uma carta vira imagem
 
 1. O template do tema (`template` no `theme.json`, ou o `template` da variante quando a carta tem
@@ -89,7 +93,18 @@ em arquivos e use `{{inline "arquivo.svg"}}` nos dois templates (o tema `default
 
 ## O tema `default`
 
-Reproduz o [design de referência](reference/card-design-reference.png).
+Reproduz o [design de referência](reference/card-design-reference.png). As cinco raridades, do Comum ao
+Lendário, com moldura, ornamentos e brilho cada vez mais elaborados:
+
+![As cinco raridades do tema default](images/raridades.jpg)
+
+O verso, ao lado da frente:
+
+![Frente e verso de uma carta](images/frente-e-verso.jpg)
+
+Os sete elementos de exemplo (cada ícone tem a sua cor):
+
+![Ícones de elemento do tema default](images/elementos.jpg)
 
 | Item | Como funciona |
 |---|---|
@@ -105,6 +120,16 @@ Reproduz o [design de referência](reference/card-design-reference.png).
 | Moldura compartilhada | `frame.svg` (faixa metálica e filetes), inserida pelos dois layouts. |
 | Variante `fullart` | `fullart.html.tmpl`: a arte ocupa toda a janela da moldura (682×982), o texto fica direto sobre a arte, sem caixa, em branco com contorno preto (`paint-order: stroke fill`, para o contorno crescer para fora sem afinar as letras), e um brilho holográfico na cor da raridade marca a versão especial. Moldura, ornamentos, brilho e gema são os da raridade, então serve para todas. **Arte recomendada: retrato, proporção ≈ 0,69 (ex.: 750×1050 ou 1500×2100 para 2x)**; arte quadrada é ampliada e cortada nas laterais. |
 
+A variante `fullart` serve para qualquer raridade (em cima, o layout padrão; embaixo, o mesmo personagem
+em full art):
+
+![Layout padrão e variante full art em todas as raridades](images/fullart.jpg)
+
+O nome encolhe sozinho para caber em uma linha, e só os nomes realmente extremos recebem reticências (à
+esquerda, o layout padrão; à direita, o full art):
+
+![Ajuste automático do tamanho do nome](images/nomes-longos.jpg)
+
 Diferença em relação à referência: as cartas da imagem de referência são mais estreitas (≈ 3:5); o tema
 usa 5:7, que é o padrão do plano. Mudar a proporção exige ajustar as coordenadas de layout em
 `style.css`, no template e no gerador de ornamentos, não só o `size` do `theme.json`.
@@ -115,10 +140,13 @@ usa 5:7, que é o padrão do plano. Mudar a proporção exige ajustar as coorden
 com as imagens revisadas em `testdata/golden/default/`:
 
 - **Mesmo navegador que gerou os goldens** (registrado em `testdata/golden/default/RENDERER`): comparação
-  exata. O Chrome é determinístico, então até um dígito trocado falha.
+  estrita. Em máquina ociosa o resultado é idêntico; sob carga pesada, alguns pixels de texto antisserrilhado
+  chegaram a variar até 3 níveis (de 255). Por isso um pixel só conta como diferente acima de 8 níveis e a
+  diferença média precisa ficar abaixo de 0,02: o ruído passa, mas um dígito trocado, um elemento deslocado ou
+  um ajuste sutil de cor ainda falham.
 - **Outro navegador ou versão**: só tolerância por média de diferença (o antialiasing de texto muda entre
   versões). Mudanças de layout, cor e assets ainda falham; o teste registra que está em modo tolerante.
 
 Depois de uma mudança visual **intencional**: `make golden`, revise as imagens geradas e faça o commit
 junto com a mudança. Os testes com navegador são pulados quando nenhum Chrome/Chromium é encontrado
-(veja `CARDMAKER_CHROME` no README).
+(veja `CARDMAKER_CHROME` em [CLI.md](CLI.md#variáveis-de-ambiente)).

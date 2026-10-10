@@ -12,17 +12,8 @@ make build   # gera bin/cardmaker e bin/cardmaker-server
 CARDMAKER_API_TOKEN=um-token-longo bin/cardmaker-server -themes themes -addr 127.0.0.1:8080
 ```
 
-| Flag | Padrão | Descrição |
-|---|---|---|
-| `-addr` | `127.0.0.1:8080` | Endereço de escuta. |
-| `-themes` | `themes` | Pasta cujas subpastas são temas; o **nome da pasta** é o nome do tema na API. |
-| `-renderer` | `chrome` | `chrome` (real) ou `fake` (retângulos coloridos, sem navegador). |
-| `-chrome` | | Executável do navegador (padrão: `CARDMAKER_CHROME`, depois o `PATH`). |
-| `-no-sandbox` | `$CARDMAKER_CHROME_NO_SANDBOX` | Roda o navegador sem o sandbox; só para contêineres (veja [DOCKER.md](DOCKER.md)). |
-| `-max-concurrent` | `4` | Renderizações em paralelo. |
-| `-queue-timeout` | `10s` | Quanto uma requisição espera por uma vaga antes de receber 503. |
-| `-max-upload-mb` | `20` | Maior corpo de requisição aceito. |
-| `-allow-no-auth` | `false` | Permite endereço não local sem token (veja abaixo). |
+Todas as flags (`-addr`, `-themes`, `-max-concurrent`, `-queue-timeout`...) e variáveis de ambiente estão em
+[CLI.md](CLI.md#cardmaker-server).
 
 O servidor imprime `listening on http://<endereço>` ao subir e desliga de forma graciosa com `Ctrl+C`
 (`SIGINT`) ou `SIGTERM`, aguardando as requisições em andamento.

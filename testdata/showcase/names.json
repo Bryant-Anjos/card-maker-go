@@ -1,0 +1,141 @@
+{
+  "$schema": "../../schema/cards.schema.json",
+  "schemaVersion": 1,
+  "cards": [
+    {
+      "id": "nome-1",
+      "number": 300,
+      "rarity": "common",
+      "element": "beast",
+      "name": {
+        "pt-BR": "Vulpin"
+      },
+      "description": {
+        "pt-BR": "Nome curto: mantém o tamanho original."
+      },
+      "art": "art/vulpin.png"
+    },
+    {
+      "id": "nome-2",
+      "number": 301,
+      "rarity": "uncommon",
+      "element": "plant",
+      "name": {
+        "pt-BR": "Guardião do Bosque"
+      },
+      "description": {
+        "pt-BR": "Nome médio: encolhe só um pouco."
+      },
+      "art": "art/cervallis.png"
+    },
+    {
+      "id": "nome-3",
+      "number": 302,
+      "rarity": "rare",
+      "element": "water",
+      "name": {
+        "pt-BR": "Leviatã das Marés Profundas"
+      },
+      "description": {
+        "pt-BR": "Nome longo: encolhe até caber em uma linha."
+      },
+      "art": "art/lunaris.png"
+    },
+    {
+      "id": "nome-4",
+      "number": 303,
+      "rarity": "epic",
+      "element": "light",
+      "name": {
+        "pt-BR": "Drakarion, Senhor das Cinzas Eternas"
+      },
+      "description": {
+        "pt-BR": "No limite: cabe quase no tamanho mínimo."
+      },
+      "art": "art/aureon.png"
+    },
+    {
+      "id": "nome-5",
+      "number": 304,
+      "rarity": "legendary",
+      "element": "fire",
+      "name": {
+        "pt-BR": "Drakarion, Senhor das Cinzas Eternas e Esquecidas do Mundo"
+      },
+      "description": {
+        "pt-BR": "Extremo: no mínimo, com reticências."
+      },
+      "art": "art/drakarion.png"
+    },
+    {
+      "id": "nome-1-fullart",
+      "number": 310,
+      "rarity": "common",
+      "element": "beast",
+      "variant": "fullart",
+      "name": {
+        "pt-BR": "Vulpin"
+      },
+      "description": {
+        "pt-BR": "Nome curto: mantém o tamanho original."
+      },
+      "art": "art/vulpin.png"
+    },
+    {
+      "id": "nome-2-fullart",
+      "number": 311,
+      "rarity": "uncommon",
+      "element": "plant",
+      "variant": "fullart",
+      "name": {
+        "pt-BR": "Guardião do Bosque"
+      },
+      "description": {
+        "pt-BR": "Nome médio: encolhe só um pouco."
+      },
+      "art": "art/cervallis.png"
+    },
+    {
+      "id": "nome-3-fullart",
+      "number": 312,
+      "rarity": "rare",
+      "element": "water",
+      "variant": "fullart",
+      "name": {
+        "pt-BR": "Leviatã das Marés Profundas"
+      },
+      "description": {
+        "pt-BR": "Nome longo: encolhe até caber em uma linha."
+      },
+      "art": "art/lunaris.png"
+    },
+    {
+      "id": "nome-4-fullart",
+      "number": 313,
+      "rarity": "epic",
+      "element": "light",
+      "variant": "fullart",
+      "name": {
+        "pt-BR": "Drakarion, Senhor das Cinzas Eternas"
+      },
+      "description": {
+        "pt-BR": "No limite: cabe quase no tamanho mínimo."
+      },
+      "art": "art/aureon.png"
+    },
+    {
+      "id": "nome-5-fullart",
+      "number": 314,
+      "rarity": "legendary",
+      "element": "fire",
+      "variant": "fullart",
+      "name": {
+        "pt-BR": "Drakarion, Senhor das Cinzas Eternas e Esquecidas do Mundo"
+      },
+      "description": {
+        "pt-BR": "Extremo: no mínimo, com reticências."
+      },
+      "art": "art/drakarion.png"
+    }
+  ]
+}

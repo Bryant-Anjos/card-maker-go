@@ -67,4 +67,4 @@ renderiza cartas com o tema carregado no servidor. Se preferir manter o sandbox,
   arquivos somente leitura.
 - **Comparação com o host**: a mesma carta renderizada no contêiner (Chromium do Debian) e no host
   (Chrome 151) diferiu em média 0,04 de 255 por canal, ou seja, praticamente idêntica. As imagens de
-  referência dos testes (`testdata/golden`) são exatas apenas com o navegador que as gerou.
+  referência dos testes (`testdata/golden`) só valem com a comparação estrita para o navegador que as gerou.

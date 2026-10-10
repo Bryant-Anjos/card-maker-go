@@ -1,6 +1,9 @@
 # Card Maker Go — Plano de implementação
 
-> Status: **planejado, aguardando início da fase 1**. Nenhum código foi escrito ainda.
+> Status: **concluído**. As 7 fases e os extras pedidos estão feitos (veja a seção "Progresso" no fim).
+>
+> Este é o **registro histórico** do planejamento e do progresso. Para saber como o programa funciona hoje,
+> use a [documentação](README.md); este arquivo só é atualizado ao registrar entregas.
 
 ## 1. Objetivo
 
@@ -184,3 +187,7 @@ MVP útil = fases 1 a 5.
 - [ ] Cache evita re-renderizar cartas inalteradas
 - [ ] Cobertura de testes ≥ 80%
 - [ ] `docs/` explica como outro projeto consome a saída
+- [x] **Extra — README ilustrado e documentação viva**: README reescrito com imagens, diagramas Mermaid (validados com o mermaid.js) e início rápido executado de verdade; novos documentos `docs/README.md` (índice e política de atualização), `CLI.md` (referência completa), `ARQUITETURA.md`, `DESENVOLVIMENTO.md` e `SOLUCAO-DE-PROBLEMAS.md`, e imagens no guia de temas. As 6 imagens (`docs/images/`) são **geradas pela ferramenta real** (`make docs-images`, `internal/devtools/docimages`) a partir do tema `default` e dos dados de `testdata/showcase`, não desenhadas à mão.
+  - Para a documentação não envelhecer: `internal/docscheck` (parte de `make check`; também `make docs-check`) falha se uma flag, subcomando, variável de ambiente, rota da API, pacote, schema ou alvo do `make` ficar sem documentação, se houver link ou âncora quebrada, documento fora do índice, imagem sem uso, ou se as imagens ficarem velhas em relação ao tema (`docs/images/SOURCE_HASH`). Verificado introduzindo 7 tipos de deriva, um por vez: todos foram pegos com a mensagem certa. `CLAUDE.md` repete as regras (mapa "mudou isto, atualize aquilo") para sessões futuras.
+  - Achados: `pkg/cardmaker/model` não tinha comentário de pacote (adicionado); a tabela de flags da API duplicava a da CLI e passou a apontar para `CLI.md` (fonte única).
+  - Instabilidade achada e corrigida: sob carga de CPU (8 núcleos ocupados) uma referência visual falhou 1 vez em 6 rodadas, com 45 pixels de texto variando até 3 níveis. O critério estrito era apertado demais (mais de 2 níveis). Agora um pixel só conta acima de 8 níveis e a diferença média deve ficar abaixo de 0,02, com testes do próprio critério (ruído passa; dígito trocado, pixel isolado, ajuste global de cor e mudança de alfa falham). Resultado: 0 falhas em 10 rodadas sob a mesma carga, e a troca de um dígito e um ajuste sutil de cor do painel continuam sendo pegos.

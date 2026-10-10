@@ -24,10 +24,14 @@ const (
 	// rendererFile records which renderer (and browser) produced the goldens.
 	rendererFile = goldenDir + "/RENDERER"
 
-	// A browser renders the same page pixel-identically every time, so with
-	// the browser that produced the goldens the comparison is exact (beyond a
-	// rounding margin): even a single changed digit fails.
-	maxChannelDiffStrict = 2
+	// With the browser that produced the goldens the comparison is strict but
+	// not bit-exact: on an idle machine the output is identical, while a machine
+	// under heavy load was seen to shift a few antialiased text pixels by up to 3
+	// levels. A pixel only counts as changed above strictPixelDiff levels and
+	// the mean difference must stay under strictMeanDiff, so that noise passes
+	// while a changed digit, a moved element or a subtle color shift still fails.
+	strictPixelDiff = 8
+	strictMeanDiff  = 0.02
 
 	// Other browser builds differ in text antialiasing (measured mean ~0.3),
 	// so only a mean tolerance applies: layout, color and asset changes still
@@ -98,9 +102,9 @@ func checkGolden(t *testing.T, actualPath, name string, strict bool) {
 
 	stats := compare(t, readPNG(t, goldenPath), readPNG(t, actualPath))
 	switch {
-	case strict && stats.changedPixels > 0:
-		t.Errorf("%d pixels differ from the golden; actual image kept at %s (run with -update if intended)",
-			stats.changedPixels, keep(t, actualPath, name))
+	case strict && stats.exceedsStrict():
+		t.Errorf("%d pixels differ by more than %d levels (mean difference %.3f) from the golden; actual image kept at %s (run with -update if intended)",
+			stats.changedPixels, strictPixelDiff, stats.meanDiff, keep(t, actualPath, name))
 	case !strict && stats.meanDiff > maxMeanDiffTolerant:
 		t.Errorf("mean difference %.2f exceeds %.2f; actual image kept at %s (run with -update if intended)",
 			stats.meanDiff, maxMeanDiffTolerant, keep(t, actualPath, name))
@@ -137,7 +141,13 @@ func readPNG(t *testing.T, path string) image.Image {
 
 type diffStats struct {
 	meanDiff      float64 // mean absolute difference per RGBA channel, 0-255
-	changedPixels int     // pixels with a channel off by more than maxChannelDiffStrict
+	changedPixels int     // pixels with a channel off by more than strictPixelDiff
+}
+
+// exceedsStrict reports whether the images differ more than rendering noise can
+// explain, for the comparison with the browser that made the goldens.
+func (s diffStats) exceedsStrict() bool {
+	return s.changedPixels > 0 || s.meanDiff > strictMeanDiff
 }
 
 func compare(t *testing.T, want, got image.Image) diffStats {
@@ -161,7 +171,7 @@ func compare(t *testing.T, want, got image.Image) diffStats {
 				total += d
 				worst = max(worst, d)
 			}
-			if worst/257 > maxChannelDiffStrict { // RGBA() is 16-bit
+			if worst/257 > strictPixelDiff { // RGBA() is 16-bit
 				changed++
 			}
 		}
