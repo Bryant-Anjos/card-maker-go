@@ -83,7 +83,7 @@ Reproduz o [design de referência](reference/card-design-reference.png).
 | Fontes | Lora (nome) e Source Sans 3 (textos), licença OFL, em `fonts/` com as licenças. |
 | Verso | `back.html.tmpl`: fundo azul-marinho, moldura dourada e rosa dos ventos. |
 | Moldura compartilhada | `frame.svg` (faixa metálica e filetes), inserida pelos dois layouts. |
-| Variante `fullart` | `fullart.html.tmpl`: a arte ocupa toda a janela da moldura (682×982), o texto fica num painel translúcido sobre a arte e um brilho holográfico na cor da raridade marca a versão especial. Moldura, ornamentos, brilho e gema são os da raridade, então serve para todas. **Arte recomendada: retrato, proporção ≈ 0,69 (ex.: 750×1050 ou 1500×2100 para 2x)**; arte quadrada é ampliada e cortada nas laterais. |
+| Variante `fullart` | `fullart.html.tmpl`: a arte ocupa toda a janela da moldura (682×982), o texto fica direto sobre a arte, sem caixa, em branco com contorno preto (`paint-order: stroke fill`, para o contorno crescer para fora sem afinar as letras), e um brilho holográfico na cor da raridade marca a versão especial. Moldura, ornamentos, brilho e gema são os da raridade, então serve para todas. **Arte recomendada: retrato, proporção ≈ 0,69 (ex.: 750×1050 ou 1500×2100 para 2x)**; arte quadrada é ampliada e cortada nas laterais. |
 
 Diferença em relação à referência: as cartas da imagem de referência são mais estreitas (≈ 3:5); o tema
 usa 5:7, que é o padrão do plano. Mudar a proporção exige ajustar as coordenadas de layout em

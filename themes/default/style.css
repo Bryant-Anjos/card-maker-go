@@ -141,18 +141,14 @@ html, body { margin: 0; width: 100%; height: 100%; background: transparent; over
 .rarity-common .gem-glow { display: none; }
 
 /* ---------- full art variant ----------
- * Art fills the frame window (20..702 x 20..1002); the text panel is a
- * translucent box (32..690 x 668..952) that ends above the rarity gem. */
+ * Art fills the frame window (20..702 x 20..1002). There is no panel box:
+ * texts sit directly on the art, white with a black outline for contrast on
+ * any artwork. The text area (32..690 x 668..952) ends above the rarity gem. */
 .variant-fullart .art {
   height: 982px;
   border-radius: 10px;
 }
 .variant-fullart .art img { object-position: center 30%; }
-.variant-fullart .art::after { /* darken the bottom so the panel reads on any art */
-  background:
-    linear-gradient(180deg, transparent 52%, rgb(4 6 10 / 0.55) 74%, rgb(4 6 10 / 0.8) 100%),
-    radial-gradient(120% 90% at 50% 40%, transparent 65%, rgb(0 0 0 / 0.30) 100%);
-}
 .variant-fullart .holo { /* foil sheen in the rarity color, marks the premium print */
   position: absolute;
   left: 20px; top: 20px; width: 682px; height: 982px;
@@ -177,12 +173,32 @@ html, body { margin: 0; width: 100%; height: 100%; background: transparent; over
 .variant-fullart .panel {
   left: 32px; top: 668px; width: 658px; height: 284px;
   padding: 18px 34px 0;
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--panel-bottom) 62%, transparent);
-  box-shadow:
-    inset 0 0 0 2px color-mix(in srgb, var(--c-light) 45%, transparent),
-    0 8px 24px rgb(0 0 0 / 0.35);
-  backdrop-filter: blur(6px);
+  background: none;
 }
-.variant-fullart .title { border-bottom-color: rgb(255 255 255 / 0.18); }
-.variant-fullart .description { color: #dde3ec; text-shadow: 0 1px 3px rgb(0 0 0 / 0.6); }
+/* paint-order draws the stroke behind the fill, so the outline grows outward
+ * instead of thinning the letters (visible outline = half the stroke width). */
+.variant-fullart .name,
+.variant-fullart .description {
+  color: #ffffff;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 8px #000000;
+  text-shadow: none;
+}
+.variant-fullart .description { -webkit-text-stroke-width: 6px; }
+.variant-fullart .title {
+  position: relative;
+  border-bottom: none;
+}
+.variant-fullart .title::after { /* divider: white line with the same black outline */
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 3px;
+  background: #ffffff;
+  box-shadow: 0 0 0 2.5px #000000;
+}
+.variant-fullart .element { /* outline the icon by stacking tight black shadows */
+  filter:
+    drop-shadow(2px 0 0 #000) drop-shadow(-2px 0 0 #000)
+    drop-shadow(0 2px 0 #000) drop-shadow(0 -2px 0 #000);
+}
