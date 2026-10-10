@@ -87,8 +87,8 @@ jogo pode ter 3 ou 8 raridades sem tocar no programa.
 | `elements[]` | não | `id`, `icon` (arquivo) e `label` opcional. |
 
 Todos os arquivos citados precisam existir na pasta do tema; o carregamento lista de uma vez todos
-os que faltam. As variáveis disponíveis dentro do template serão documentadas junto com o renderer
-(fase 4 do [plano](PLAN.md)).
+os que faltam. Os dados disponíveis dentro dos templates e as regras de renderização estão no
+[guia de temas](TEMAS.md).
 
 ## Saída: imagens e `manifest.json`
 

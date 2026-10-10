@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="{{.Stylesheet}}">
+</head>
+<body>
+  <main class="card rarity-{{.Rarity.ID}}" style="--c: {{.Rarity.Color}}">
+    <div class="art"><img src="{{.ArtURL}}" alt=""></div>
+
+    <section class="panel">
+      <header class="title">
+        <h1 class="name">{{.Card.Name}}</h1>
+        {{- if .Element}}
+        <span class="element element-{{.Element.ID}}">{{inline .Element.Icon}}</span>
+        {{- end}}
+      </header>
+      {{- if .Card.Description}}
+      <p class="description">{{.Card.Description}}</p>
+      {{- end}}
+    </section>
+
+    <svg class="frame" viewBox="0 0 722 1022" aria-hidden="true">
+      <defs>
+        <linearGradient id="metal" x1="0" y1="0" x2="0.35" y2="1">
+          <stop offset="0" class="m-light"/>
+          <stop offset="0.3" class="m-mid"/>
+          <stop offset="0.5" class="m-dark"/>
+          <stop offset="0.7" class="m-mid"/>
+          <stop offset="1" class="m-light"/>
+        </linearGradient>
+        <linearGradient id="metal-h" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" class="m-light"/>
+          <stop offset="0.5" class="m-mid"/>
+          <stop offset="1" class="m-dark"/>
+        </linearGradient>
+      </defs>
+      <!-- outer band (20px): rounded card outline minus the inner window -->
+      <path class="band" fill-rule="evenodd" d="
+        M24,0 H698 A24,24 0 0 1 722,24 V998 A24,24 0 0 1 698,1022 H24 A24,24 0 0 1 0,998 V24 A24,24 0 0 1 24,0 Z
+        M30,20 H692 A10,10 0 0 1 702,30 V992 A10,10 0 0 1 692,1002 H30 A10,10 0 0 1 20,992 V30 A10,10 0 0 1 30,20 Z"/>
+      <!-- bar between artwork and text panel -->
+      <rect class="separator" x="20" y="662" width="682" height="16"/>
+      <path class="edge-dark" d="M24,1 H698 A23,23 0 0 1 721,24 V998 A23,23 0 0 1 698,1021 H24 A23,23 0 0 1 1,998 V24 A23,23 0 0 1 24,1 Z"/>
+      <path class="edge-bevel" d="M24,6 H698 A18,18 0 0 1 716,24 V998 A18,18 0 0 1 698,1016 H24 A18,18 0 0 1 6,998 V24 A18,18 0 0 1 24,6 Z"/>
+      <path class="edge-lit" d="M30,20.75 H692 A9.25,9.25 0 0 1 701.25,30 V992 A9.25,9.25 0 0 1 692,1001.25 H30 A9.25,9.25 0 0 1 20.75,992 V30 A9.25,9.25 0 0 1 30,20.75 Z"/>
+      <path class="edge-lit" d="M20,662.75 H702 M20,677.25 H702"/>
+      <!-- inset box around the text panel -->
+      <rect class="panel-line" x="32" y="690" width="658" height="300" rx="10"/>
+    </svg>
+
+    <div class="ornaments">{{inline .Rarity.Frame}}</div>
+
+    {{- if .Card.Number}}
+    <div class="number">{{printf "%03d" .Card.Number}}</div>
+    {{- end}}
+  </main>
+</body>
+</html>

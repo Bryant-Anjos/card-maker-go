@@ -1,0 +1,93 @@
+# Guia de temas
+
+Um tema é uma pasta com um `theme.json` (formato em [CONTRATO.md](CONTRATO.md)) e os arquivos que ele cita:
+templates HTML, CSS, fontes, molduras e ícones. O programa não sabe nada de raridades ou elementos: tudo
+que aparece na carta é decidido pelo tema.
+
+## Como uma carta vira imagem
+
+1. O template do tema (`template` no `theme.json`) é executado com os dados da carta, usando
+   [`html/template`](https://pkg.go.dev/html/template) do Go (os textos são escapados automaticamente).
+2. A página resultante é aberta em um Chrome/Chromium headless, com viewport do tamanho do tema
+   (`size`) e `deviceScaleFactor` igual à escala pedida. Escreva o CSS sempre em pixels do tamanho
+   base: a escala 2x sai nítida sem nenhuma mudança no tema.
+3. O renderer espera as fontes (`document.fonts.ready`) e as imagens carregarem e tira um screenshot
+   PNG. O **fundo é transparente**: o que o tema não pintar sai com alfa 0 (útil para cantos
+   arredondados e brilho).
+
+A página é servida por um servidor local temporário (somente loopback, porta e token aleatórios). Por
+isso, **caminhos relativos funcionam normalmente**: `href="style.css"`, `url("fonts/x.woff2")`,
+`src="icons/fire.svg"` são resolvidos a partir da raiz do tema.
+
+Nomes reservados na raiz do tema: `__page.html` (a página gerada) e `__art` (a arte da carta). Não use
+arquivos com esses nomes.
+
+## Dados do template da carta
+
+| Campo | Tipo | Exemplo de uso |
+|---|---|---|
+| `.Card.ID` | texto | `class="card-{{.Card.ID}}"` |
+| `.Card.Number` | inteiro (0 = sem número) | `{{if .Card.Number}}{{printf "%03d" .Card.Number}}{{end}}` → `032` |
+| `.Card.Name` | texto já no locale da saída | `<h1>{{.Card.Name}}</h1>` |
+| `.Card.Description` | texto já no locale (pode ser vazio) | `{{if .Card.Description}}…{{end}}` |
+| `.Card.Rarity`, `.Card.Element` | ids | |
+| `.Rarity.ID`, `.Rarity.Color`, `.Rarity.Frame` | a raridade como definida no tema | `style="--c: {{.Rarity.Color}}"` |
+| `.Element` | elemento do tema, ou **nulo** se a carta não tem | `{{if .Element}}{{inline .Element.Icon}}{{end}}` |
+| `.Size.Width`, `.Size.Height` | tamanho base em px | |
+| `.ArtURL` | URL da arte da carta | `<img src="{{.ArtURL}}">` |
+| `.Stylesheet` | o `stylesheet` do tema | `<link rel="stylesheet" href="{{.Stylesheet}}">` |
+
+O template do verso (`back`) recebe só `.Size` e `.Stylesheet`.
+
+### Funções
+
+- `inline "caminho"`: insere um arquivo do tema (normalmente SVG) direto no HTML, para que ele possa ser
+  estilizado pelo CSS da página (por exemplo, usar variáveis CSS de cor). O caminho precisa estar dentro
+  do tema.
+- Todas as funções padrão do `html/template`: `printf`, `if`, `with`, `eq`, `len`, etc.
+
+## Boas práticas
+
+- **Embuta as fontes no tema** (`@font-face` com arquivos locais). Fontes do sistema mudam de máquina
+  para máquina; fontes remotas deixam o build lento e não reprodutível.
+- **Evite recursos remotos** em geral (imagens, CSS, scripts de CDN) pelo mesmo motivo.
+- **Recorte a arte com `object-fit: cover`**: a proporção das ilustrações não é validada.
+- **Limite os textos**: nome em uma linha com `text-overflow: ellipsis` e descrição com
+  `-webkit-line-clamp`, para que um texto longo nunca invada outros elementos.
+- **Deixe margem para efeitos** (brilho, ornamentos que saem da borda) dentro do canvas: o que passar do
+  tamanho do tema é cortado.
+- Não use `<use href="#id">` esperando que os clones herdem classes CSS: no Chrome isso não é confiável.
+  Use atributos SVG diretos (`fill`, `stroke`) dentro de `<defs>` reutilizados.
+
+## O tema `default`
+
+Reproduz o [design de referência](reference/card-design-reference.png).
+
+| Item | Como funciona |
+|---|---|
+| Canvas | 750×1050 (5:7, proporção padrão de cartas colecionáveis). A carta ocupa 722×1022 com 14px de margem para o brilho. |
+| Layout | Moldura de 20px; arte 682×644 no topo; barra separadora; painel com nome, ícone, divisória e até 3 linhas de descrição; gema da raridade na base. Coordenadas comentadas no topo de `style.css`. |
+| Cor da raridade | Vem de `theme.json` (`color`) como `--c`; tons claros e escuros são derivados com `color-mix()`, então mudar a cor no `theme.json` recolore moldura, gema, painel e brilho. |
+| Molduras por raridade | `frames/<raridade>.svg` contém só os **ornamentos** (cantos, entalhes, gema, coroa), mais elaborados a cada nível; a moldura base é comum e fica no template. Os SVGs são gerados por `internal/devtools/framegen` (`make theme-frames`). |
+| Brilho | Classes `.rarity-<id>` em `style.css` definem a intensidade (nenhum no Comum, máximo no Lendário). |
+| Ícones | `icons/<elemento>.svg`, 48×48, cada um com sua própria cor. |
+| Fontes | Lora (nome) e Source Sans 3 (textos), licença OFL, em `fonts/` com as licenças. |
+| Verso | `back.html.tmpl`: fundo azul-marinho, moldura dourada e rosa dos ventos. |
+
+Diferença em relação à referência: as cartas da imagem de referência são mais estreitas (≈ 3:5); o tema
+usa 5:7, que é o padrão do plano. Mudar a proporção exige ajustar as coordenadas de layout em
+`style.css`, no template e no gerador de ornamentos, não só o `size` do `theme.json`.
+
+## Regressão visual (golden images)
+
+`pkg/cardmaker/render/chrome/golden_test.go` renderiza as cartas de exemplo com o tema `default` e compara
+com as imagens revisadas em `testdata/golden/default/`:
+
+- **Mesmo navegador que gerou os goldens** (registrado em `testdata/golden/default/RENDERER`): comparação
+  exata. O Chrome é determinístico, então até um dígito trocado falha.
+- **Outro navegador ou versão**: só tolerância por média de diferença (o antialiasing de texto muda entre
+  versões). Mudanças de layout, cor e assets ainda falham; o teste registra que está em modo tolerante.
+
+Depois de uma mudança visual **intencional**: `make golden`, revise as imagens geradas e faça o commit
+junto com a mudança. Os testes com navegador são pulados quando nenhum Chrome/Chromium é encontrado
+(veja `CARDMAKER_CHROME` no README).

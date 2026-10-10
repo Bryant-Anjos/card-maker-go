@@ -132,17 +132,24 @@ MVP útil = fases 1 a 5.
 - [x] **Fase 1 — Fundação**: `go.mod`, `.tool-versions`, estrutura de pastas, `Makefile` (`check`/`build`/`cover`), `.gitignore`, README, CLI mínimo (`cardmaker version`) e teste de versão. `make check` passa.
 - [x] **Fase 2 — Contrato de dados**: pacote `pkg/cardmaker/model` (`Card`, `CardSet`, `Theme`, `Manifest`, `LocalizedText`) com validação que reporta todos os erros com o caminho do campo, parsing estrito (rejeita campos desconhecidos e dados após o JSON) e JSON Schemas em `schema/` (embutidos via `embed`). Um teste de conformidade garante que schema e validação Go aceitam e rejeitam os mesmos documentos. Dados de exemplo em `testdata/cards/cards.json`, `testdata/manifest/manifest.json` e `themes/default/theme.json`. Cobertura 97,5%.
 - [x] **Fase 3 — Tema e i18n**: `theme.Load`/`theme.LoadDir` (lê `theme.json`, valida e confere que template, stylesheet, back, frames e ícones existem, reportando todos os arquivos faltantes de uma vez; carrega via `fs.FS`, então é testável sem disco), `CardSet.ValidateAgainst(theme)` (raridade e elemento da carta precisam existir no tema, com mensagem listando os válidos) e `i18n.Resolver` (resolve nome/descrição por locale com fallback e devolve `ResolvedCard`, o que o renderer vai consumir). Cobertura 97,9%.
-  - O tema `default` só carrega depois da fase 4, quando seus assets existirem.
-- [ ] Fase 4 — Renderer (design visual)
+  - O tema `default` passou a carregar com a fase 4.
+- [x] **Fase 4 — Renderer e design visual** (feita pelo Opus, depois da 5 e da 6):
+  - `render/chrome`: renderer real com chromedp v0.20. Executa o template do tema, serve página, arte e arquivos do tema por um servidor local (loopback, porta e token aleatórios) para que caminhos relativos funcionem, renderiza com `deviceScaleFactor` = escala e fundo transparente, espera fontes e imagens, e captura PNG. Uma aba por imagem, seguro para concorrência. `Version()` inclui a versão do navegador, então atualizar o Chrome invalida o cache.
+  - Navegador: `-chrome`, `CARDMAKER_CHROME` ou `PATH`. Testado com `chrome-headless-shell` 151 e Brave 154.
+  - Achado: `cdp.RGBA` omite alfa 0 (`omitzero`) e o fundo saía opaco; o renderer envia o comando com parâmetros próprios.
+  - Tema `default` completo: template, CSS, moldura base, ornamentos por raridade (gerados por `internal/devtools/framegen`), 7 ícones, verso, fontes OFL embutidas. Detalhes em [TEMAS.md](TEMAS.md).
+  - `testdata/showcase/`: artes recortadas da referência para revisão visual.
+  - Regressão visual: golden images em `testdata/golden/default/`, comparação exata com o mesmo navegador (é determinístico: 0 pixels diferentes em 4 execuções) e tolerante com outros; uma troca de um dígito é detectada.
+  - Diferença consciente: a referência tem proporção ≈ 3:5; o tema usa 5:7 (decisão do plano).
 - [x] **Fase 5 — Pipeline em lote** (feita antes da 4, com renderer falso, a pedido): 
   - `render.Renderer` (interface: `Version`, `RenderCard`, `RenderBack`, sempre PNG com o tamanho do tema × escala) e `render.Fake` (retângulos na cor da raridade, sem navegador).
   - `pipeline.Run`/`pipeline.Validate`: valida tudo antes de renderizar (tema, cartas, raridades/elementos, textos do locale, arte existente e decodificável como png/jpeg/webp), renderiza em paralelo (`errgroup`), gera 1x/2x (`@2x`) em PNG e/ou WebP e grava `OutDir/<locale>/manifest.json` de forma atômica.
   - Cache por hash (versão do pipeline + versão do renderer + hash do tema inteiro + carta resolvida + hash da arte + escalas + formatos) em `.cache.json`; só re-renderiza o que mudou ou o que teve arquivo apagado; `-force` ignora o cache.
-  - CLI: `cardmaker validate|build|version`. `build -renderer chrome` (padrão) ainda responde que não está implementado; use `-renderer fake`.
+  - CLI: `cardmaker validate|build|version`; `-renderer chrome` (padrão, real desde a fase 4) ou `fake`.
   - Decisão de contrato: `manifest.back` virou **lista** de imagens (escalas e formatos), como as cartas.
   - Fixtures: tema de teste `testdata/themes/basic` (75×105 para os testes serem rápidos; o WebP em Go puro é lento em tamanho real) e artes placeholder em `testdata/cards/art` (`make testdata-art`).
   - Limitações conhecidas: WebP é **lossless** (encoder em Go puro); arquivos órfãos de cartas removidas não são apagados; a proporção da arte não é validada (o template deve usar `object-fit: cover`). Cobertura total 91,5%, sem races.
-- [x] **Fase 6 — Docs**: [CONTRATO.md](CONTRATO.md) (entradas, saída, regras, versionamento, limitações) e [INTEGRACAO.md](INTEGRACAO.md) (receitas para web, nativo/engines e Go; os snippets JS foram executados contra um manifest real e o de Go é um `Example` verificado pelo `go test`). Ajuste de contrato: os arquivos de cartas, tema e manifest aceitam `"$schema"` opcional para autocompletar no editor. Pendente: documentar as variáveis do template junto com a fase 4.
+- [x] **Fase 6 — Docs**: [CONTRATO.md](CONTRATO.md) (entradas, saída, regras, versionamento, limitações) e [INTEGRACAO.md](INTEGRACAO.md) (receitas para web, nativo/engines e Go; os snippets JS foram executados contra um manifest real e o de Go é um `Example` verificado pelo `go test`). Ajuste de contrato: os arquivos de cartas, tema e manifest aceitam `"$schema"` opcional para autocompletar no editor. As variáveis do template foram documentadas na fase 4, em [TEMAS.md](TEMAS.md).
 - [ ] Fase 7 — API (opcional)
 
 ## 11. Contrato de dados (resumo da fase 2)

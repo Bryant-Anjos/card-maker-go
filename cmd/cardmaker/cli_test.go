@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/render/chrome"
 )
 
 const (
@@ -107,11 +109,39 @@ func TestBuildWithFakeRenderer(t *testing.T) {
 	}
 }
 
-func TestBuildDefaultRendererNotAvailableYet(t *testing.T) {
-	code, _, errOut := execute("build", "-cards", cardsFile, "-theme", themeDir, "-out", t.TempDir())
+func TestBuildChromeRendererWithMissingBrowser(t *testing.T) {
+	code, _, errOut := execute("build", "-cards", cardsFile, "-theme", themeDir, "-out", t.TempDir(),
+		"-chrome", "/nope/chrome")
 
-	if code != 1 || !strings.Contains(errOut, "-renderer fake") {
-		t.Errorf("code = %d, stderr = %q, want a hint to use -renderer fake", code, errOut)
+	if code != 1 || !strings.Contains(errOut, "/nope/chrome") {
+		t.Errorf("code = %d, stderr = %q, want the missing browser path in the error", code, errOut)
+	}
+}
+
+func TestBuildWithChromeRenderer(t *testing.T) {
+	if _, err := chrome.FindBrowser(""); err != nil {
+		t.Skipf("no browser available: %v", err)
+	}
+	out := t.TempDir()
+
+	code, stdout, stderr := execute("build", "-cards", cardsFile, "-theme", themeDir, "-out", out, "-scales", "1")
+
+	if code != 0 {
+		t.Fatalf("code = %d, stderr = %s", code, stderr)
+	}
+	if !strings.Contains(stdout, "rendered 6") {
+		t.Errorf("stdout = %q", stdout)
+	}
+	if _, err := os.Stat(filepath.Join(out, "pt-BR", "cards", "drakarion.png")); err != nil {
+		t.Errorf("missing output: %v", err)
+	}
+}
+
+func TestUnknownRenderer(t *testing.T) {
+	code, _, errOut := execute("build", "-cards", cardsFile, "-theme", themeDir, "-out", t.TempDir(), "-renderer", "magic")
+
+	if code != 1 || !strings.Contains(errOut, "magic") {
+		t.Errorf("code = %d, stderr = %q", code, errOut)
 	}
 }
 

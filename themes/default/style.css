@@ -1,0 +1,141 @@
+/* Card Maker Go — default theme.
+ * Canvas: 750x1050. The card sits 14px inside it so the rarity glow fits.
+ * Card coordinates (722x1022): 20px frame band, art 20..702 x 20..664,
+ * separator 662..678, text panel 678..1002 (3 description lines fit above
+ * the rarity gem, which starts at y=962). The rarity color arrives as --c
+ * on .card; lighter and darker tones are derived from it. */
+
+@font-face { font-family: "Lora"; font-weight: 600; src: url("fonts/lora-600.woff2") format("woff2"); }
+@font-face { font-family: "Lora"; font-weight: 700; src: url("fonts/lora-700.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-weight: 400; src: url("fonts/source-sans-3-400.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-weight: 600; src: url("fonts/source-sans-3-600.woff2") format("woff2"); }
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+
+.card {
+  --c-light: color-mix(in srgb, var(--c) 72%, white);
+  --c-bright: color-mix(in srgb, var(--c) 45%, white);
+  --c-dark: color-mix(in srgb, var(--c) 62%, black);
+  --c-deep: color-mix(in srgb, var(--c) 30%, black);
+  --panel-top: color-mix(in srgb, var(--c) 14%, #0c1119);
+  --panel-bottom: color-mix(in srgb, var(--c) 6%, #080b11);
+  --glow: 0px;
+  --glow-alpha: 0%;
+
+  position: absolute;
+  inset: 14px;
+  border-radius: 24px;
+  background: var(--panel-bottom);
+  filter: drop-shadow(0 0 var(--glow) color-mix(in srgb, var(--c) var(--glow-alpha), transparent));
+}
+
+/* Rarity intensity. Ids are this theme's own data (theme.json). */
+.rarity-uncommon  { --glow: 6px;  --glow-alpha: 60%; }
+.rarity-rare      { --glow: 9px;  --glow-alpha: 80%; }
+.rarity-epic      { --glow: 11px; --glow-alpha: 90%; }
+.rarity-legendary { --glow: 13px; --glow-alpha: 100%; }
+
+/* ---------- artwork ---------- */
+.art {
+  position: absolute;
+  left: 20px; top: 20px; width: 682px; height: 644px;
+  overflow: hidden;
+  border-radius: 10px 10px 0 0;
+  background: #0b0f16;
+}
+.art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.art::after { /* soft vignette so the frame reads against bright art */
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, transparent 72%, rgb(0 0 0 / 0.35) 100%),
+    radial-gradient(120% 90% at 50% 40%, transparent 65%, rgb(0 0 0 / 0.30) 100%);
+}
+
+/* ---------- text panel ---------- */
+.panel {
+  position: absolute;
+  left: 20px; top: 678px; width: 682px; height: 324px;
+  padding: 22px 46px 0;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(180deg, var(--panel-top), var(--panel-bottom));
+  color: #eef1f6;
+}
+.title {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 84px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgb(255 255 255 / 0.13);
+}
+.name {
+  flex: 1;
+  margin: 0;
+  font: 600 62px/1.15 "Lora", serif;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 2px 6px rgb(0 0 0 / 0.45);
+}
+.element { flex: none; width: 60px; height: 60px; filter: drop-shadow(0 0 6px rgb(0 0 0 / 0.5)); }
+.element svg { display: block; width: 100%; height: 100%; }
+.description {
+  margin: 16px 0 0;
+  font: 400 39px/1.3 "Source Sans 3", sans-serif;
+  color: #c9d0dc;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+/* ---------- collection number ---------- */
+.number {
+  position: absolute;
+  top: 32px; right: 32px;
+  padding: 11px 20px 13px;
+  border-radius: 14px;
+  background: rgb(8 11 17 / 0.82);
+  box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.08);
+  font: 600 40px/1 "Source Sans 3", sans-serif;
+  letter-spacing: 0.06em;
+  color: #f3f5f9;
+}
+
+/* ---------- frame (shared base + per-rarity ornaments) ---------- */
+.frame, .ornaments, .ornaments svg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.m-bright { stop-color: var(--c-bright); }
+.m-light  { stop-color: var(--c-light); }
+.m-mid    { stop-color: var(--c); }
+.m-dark   { stop-color: var(--c-dark); }
+.m-deep   { stop-color: var(--c-deep); }
+
+.band      { fill: url(#metal); }
+.separator { fill: url(#metal-h); }
+.edge-dark { fill: none; stroke: rgb(0 0 0 / 0.55); stroke-width: 2; }
+.edge-lit  { fill: none; stroke: var(--c-bright); stroke-opacity: 0.8; stroke-width: 1.5; }
+.edge-bevel { fill: none; stroke: #ffffff; stroke-opacity: 0.35; stroke-width: 1.5; }
+.panel-line { fill: none; stroke: var(--c-light); stroke-opacity: 0.35; stroke-width: 2; }
+
+.orn       { fill: url(#metal); stroke: var(--c-deep); stroke-width: 1.5; }
+.orn-line  { fill: none; stroke: var(--c-light); stroke-width: 3; stroke-linecap: round; }
+.orn-thin  { fill: none; stroke: var(--c-light); stroke-width: 1.8; stroke-linecap: round; opacity: 0.85; }
+.stud      { fill: var(--c-bright); stroke: var(--c-deep); stroke-width: 1.5; }
+.sparkle   { fill: #ffffff; opacity: 0.9; }
+
+.gem-glow  { fill: var(--c); opacity: 0.55; filter: blur(8px); }
+.gem-base  { fill: var(--c-dark); stroke: var(--c-deep); stroke-width: 2; }
+.gem-top   { fill: var(--c-bright); }
+.gem-left  { fill: var(--c-light); }
+.gem-right { fill: var(--c); }
+.gem-low   { fill: var(--c-dark); }
+.gem-shine { fill: #ffffff; opacity: 0.85; }
+.rarity-common .gem-glow { display: none; }

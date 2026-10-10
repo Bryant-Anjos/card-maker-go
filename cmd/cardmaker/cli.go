@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -15,6 +14,7 @@ import (
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/pipeline"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/render"
+	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/render/chrome"
 )
 
 // Exit codes.
@@ -103,6 +103,7 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 	concurrency := fs.Int("concurrency", 0, "cards rendered in parallel (default 4)")
 	force := fs.Bool("force", false, "ignore the cache and render everything")
 	rendererName := fs.String("renderer", "chrome", "renderer: chrome or fake")
+	browserPath := fs.String("chrome", "", "browser executable (default: $"+chrome.EnvBrowserPath+", then PATH)")
 
 	if err := fs.Parse(args); err != nil {
 		return exitUsage
@@ -121,11 +122,16 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 	opts.Concurrency = *concurrency
 	opts.Force = *force
 
-	renderer, err := newRenderer(*rendererName)
+	renderer, closeRenderer, err := newRenderer(*rendererName, *browserPath)
 	if err != nil {
 		fmt.Fprintln(stderr, err)
 		return exitFailure
 	}
+	defer func() {
+		if err := closeRenderer(); err != nil {
+			fmt.Fprintln(stderr, "close renderer:", err)
+		}
+	}()
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -143,14 +149,20 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 	return exitOK
 }
 
-func newRenderer(name string) (render.Renderer, error) {
+// newRenderer builds the named renderer and returns a function that releases
+// its resources (the browser, for chrome).
+func newRenderer(name, browserPath string) (render.Renderer, func() error, error) {
 	switch name {
 	case "fake":
-		return render.NewFake(), nil
+		return render.NewFake(), func() error { return nil }, nil
 	case "chrome":
-		return nil, errors.New("the chrome renderer is not implemented yet; use -renderer fake to exercise the pipeline")
+		r, err := chrome.New(chrome.Options{BrowserPath: browserPath})
+		if err != nil {
+			return nil, nil, err
+		}
+		return r, r.Close, nil
 	default:
-		return nil, fmt.Errorf("unknown renderer %q, use chrome or fake", name)
+		return nil, nil, fmt.Errorf("unknown renderer %q, use chrome or fake", name)
 	}
 }
 
