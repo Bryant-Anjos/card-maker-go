@@ -45,6 +45,10 @@ var goldenSets = []struct {
 		"cards/aureon.png", "cards/drakarion.png", "back.png",
 	}},
 	{"variants.json", []string{"cards/lunaris-fullart.png", "cards/drakarion-fullart.png"}},
+	{"longnames.json", []string{
+		"cards/fit-medium.png", "cards/fit-long.png", "cards/fit-edge.png", "cards/fit-extreme.png",
+		"cards/fit-long-fullart.png", "cards/fit-extreme-fullart.png",
+	}},
 }
 
 // TestDefaultThemeGolden renders the sample cards with the default theme and

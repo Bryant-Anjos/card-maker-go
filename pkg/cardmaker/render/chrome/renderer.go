@@ -23,9 +23,14 @@ const rendererVersion = "1"
 
 const defaultTimeout = 60 * time.Second
 
-// waitForAssets resolves once web fonts are ready and every image decoded,
-// so screenshots never catch a half-loaded card.
-const waitForAssets = `document.fonts.ready
+// waitForAssets resolves once web fonts are ready, the theme's own asynchronous
+// work is done and every image decoded, so screenshots never catch a
+// half-loaded card.
+//
+// A theme that needs to run code after the fonts load (for example to fit text)
+// assigns a promise to window.cardReady; the renderer waits for it, and a
+// rejection fails the render. Themes that define nothing are unaffected.
+const waitForAssets = `Promise.all([document.fonts.ready, window.cardReady])
 	.then(() => Promise.all(Array.from(document.images, (img) => img.decode().catch(() => null))))
 	.then(() => new Promise((resolve) => requestAnimationFrame(() => resolve(true))))`
 
@@ -183,9 +188,19 @@ func (r *Renderer) capture(ctx context.Context, p pageContent, size model.Size, 
 	return screenshot, nil
 }
 
-// screenshot loads url in the tab of ctx at the given size and device scale,
-// waits for fonts and images, and captures the viewport as PNG.
+// screenshot loads url in the tab of ctx at the given size and device scale
+// and captures the viewport as PNG.
 func (r *Renderer) screenshot(ctx context.Context, url string, size model.Size, scale int) ([]byte, error) {
+	if err := r.loadPage(ctx, url, size, scale); err != nil {
+		return nil, err
+	}
+
+	return chromedp.Run(ctx, chromedp.CaptureScreenshot())
+}
+
+// loadPage opens url in the tab of ctx at the given size and device scale and
+// waits until the page is ready to be captured (see waitForAssets).
+func (r *Renderer) loadPage(ctx context.Context, url string, size model.Size, scale int) error {
 	err := chromedp.Do(ctx,
 		chromedp.Func(func(ctx context.Context, t *chromedp.Target) error {
 			_, err := cdp.Call(ctx, t, emulation.SetDeviceMetricsOverride, emulation.SetDeviceMetricsOverrideParams{
@@ -202,12 +217,12 @@ func (r *Renderer) screenshot(ctx context.Context, url string, size model.Size, 
 		chromedp.Navigate(url),
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if _, err := chromedp.Run(ctx, chromedp.Evaluate[bool](waitForAssets, chromedp.EvalAwaitPromise)); err != nil {
-		return nil, fmt.Errorf("wait for fonts and images: %w", err)
+		return fmt.Errorf("wait for fonts, images and the theme: %w", err)
 	}
 
-	return chromedp.Run(ctx, chromedp.CaptureScreenshot())
+	return nil
 }

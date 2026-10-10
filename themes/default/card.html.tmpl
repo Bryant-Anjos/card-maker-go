@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="{{.Stylesheet}}">
+  <script src="fit.js"></script>
 </head>
 <body>
   <main class="card rarity-{{.Rarity.ID}}" style="--c: {{.Rarity.Color}}">
@@ -10,7 +11,7 @@
 
     <section class="panel">
       <header class="title">
-        <h1 class="name">{{.Card.Name}}</h1>
+        <h1 class="name" data-fit data-fit-min="28">{{.Card.Name}}</h1>
         {{- if .Element}}
         <span class="element element-{{.Element.ID}}">{{inline .Element.Icon}}</span>
         {{- end}}

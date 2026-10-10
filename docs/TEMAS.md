@@ -12,8 +12,8 @@ que aparece na carta é decidido pelo tema.
 2. A página resultante é aberta em um Chrome/Chromium headless, com viewport do tamanho do tema
    (`size`) e `deviceScaleFactor` igual à escala pedida. Escreva o CSS sempre em pixels do tamanho
    base: a escala 2x sai nítida sem nenhuma mudança no tema.
-3. O renderer espera as fontes (`document.fonts.ready`) e as imagens carregarem e tira um screenshot
-   PNG. O **fundo é transparente**: o que o tema não pintar sai com alfa 0 (útil para cantos
+3. O renderer espera as fontes (`document.fonts.ready`), o trabalho assíncrono do próprio tema
+   (`window.cardReady`, veja abaixo) e as imagens carregarem, e tira um screenshot PNG. O **fundo é transparente**: o que o tema não pintar sai com alfa 0 (útil para cantos
    arredondados e brilho).
 
 A página é servida por um servidor local temporário (somente loopback, porta e token aleatórios). Por
@@ -41,6 +41,22 @@ arquivos com esses nomes.
 
 O template do verso (`back`) recebe só `.Size` e `.Stylesheet`.
 
+### Scripts do tema: `window.cardReady`
+
+Um tema pode ter JavaScript, por exemplo para ajustar texto depois que as fontes carregam (as medidas
+dependem delas). Se o tema precisa terminar algum trabalho antes da captura, ele atribui uma **promessa** a
+`window.cardReady`; o renderer a aguarda. Se a promessa for rejeitada, a renderização falha com o erro; se
+nunca terminar, a renderização falha por timeout (60 s por padrão). Temas que não definem `cardReady`
+funcionam normalmente.
+
+```html
+<script>
+  window.cardReady = document.fonts.ready.then(() => { /* mede e ajusta o layout */ });
+</script>
+```
+
+Arquivos de script do tema são servidos como os demais (`<script src="fit.js">`).
+
 ### Funções
 
 - `inline "caminho"`: insere um arquivo do tema (normalmente SVG) direto no HTML, para que ele possa ser
@@ -63,6 +79,9 @@ em arquivos e use `{{inline "arquivo.svg"}}` nos dois templates (o tema `default
 - **Recorte a arte com `object-fit: cover`**: a proporção das ilustrações não é validada.
 - **Limite os textos**: nome em uma linha com `text-overflow: ellipsis` e descrição com
   `-webkit-line-clamp`, para que um texto longo nunca invada outros elementos.
+- **Ajuste automático de fonte**: o tema `default` inclui `fit.js`, que encolhe qualquer elemento marcado com
+  `data-fit` até o texto caber em uma linha, de um em um pixel, até `data-fit-min`. Só se o texto ainda não
+  couber no mínimo é que o CSS corta com reticências. Elementos que já cabem não são tocados.
 - **Deixe margem para efeitos** (brilho, ornamentos que saem da borda) dentro do canvas: o que passar do
   tamanho do tema é cortado.
 - Não use `<use href="#id">` esperando que os clones herdem classes CSS: no Chrome isso não é confiável.
@@ -82,6 +101,7 @@ Reproduz o [design de referência](reference/card-design-reference.png).
 | Ícones | `icons/<elemento>.svg`, 48×48, cada um com sua própria cor. |
 | Fontes | Lora (nome) e Source Sans 3 (textos), licença OFL, em `fonts/` com as licenças. |
 | Verso | `back.html.tmpl`: fundo azul-marinho, moldura dourada e rosa dos ventos. |
+| Nome longo | O nome começa em 62 px e encolhe até **28 px** para caber (`data-fit-min` no template). Medido: nomes de até ~36 caracteres cabem inteiros mesmo com o ícone de elemento ao lado (27 caracteres → 37 px, 31 → 32 px, 36 → 28 px); acima disso, reticências. |
 | Moldura compartilhada | `frame.svg` (faixa metálica e filetes), inserida pelos dois layouts. |
 | Variante `fullart` | `fullart.html.tmpl`: a arte ocupa toda a janela da moldura (682×982), o texto fica direto sobre a arte, sem caixa, em branco com contorno preto (`paint-order: stroke fill`, para o contorno crescer para fora sem afinar as letras), e um brilho holográfico na cor da raridade marca a versão especial. Moldura, ornamentos, brilho e gema são os da raridade, então serve para todas. **Arte recomendada: retrato, proporção ≈ 0,69 (ex.: 750×1050 ou 1500×2100 para 2x)**; arte quadrada é ampliada e cortada nas laterais. |
 

@@ -27,7 +27,7 @@ var contracts = []contract{
 		name:   "cards",
 		schema: "cards.schema.json",
 		parse:  func(src string) error { _, err := model.ParseCardSet(strings.NewReader(src)); return err },
-		files:  []string{"../testdata/cards/cards.json", "../testdata/cards/variants.json"},
+		files:  []string{"../testdata/cards/cards.json", "../testdata/cards/variants.json", "../testdata/cards/longnames.json"},
 	},
 	{
 		name:   "theme",

@@ -1,0 +1,86 @@
+{
+  "$schema": "../../schema/cards.schema.json",
+  "schemaVersion": 1,
+  "cards": [
+    {
+      "id": "fit-medium",
+      "number": 201,
+      "rarity": "common",
+      "element": "beast",
+      "name": {
+        "pt-BR": "Guardião do Bosque"
+      },
+      "description": {
+        "pt-BR": "Nome médio: encolhe só um pouco."
+      },
+      "art": "art/vulpin.png"
+    },
+    {
+      "id": "fit-long",
+      "number": 202,
+      "rarity": "rare",
+      "element": "water",
+      "name": {
+        "pt-BR": "Leviatã das Marés Profundas"
+      },
+      "description": {
+        "pt-BR": "Nome longo: encolhe até caber em uma linha."
+      },
+      "art": "art/lunaris.png"
+    },
+    {
+      "id": "fit-edge",
+      "number": 203,
+      "rarity": "epic",
+      "element": "light",
+      "name": {
+        "pt-BR": "Drakarion, Senhor das Cinzas Eternas"
+      },
+      "description": {
+        "pt-BR": "No limite: cabe quase no tamanho mínimo."
+      },
+      "art": "art/aureon.png"
+    },
+    {
+      "id": "fit-extreme",
+      "number": 204,
+      "rarity": "legendary",
+      "element": "fire",
+      "name": {
+        "pt-BR": "Drakarion, Senhor das Cinzas Eternas e Esquecidas do Mundo"
+      },
+      "description": {
+        "pt-BR": "Extremo: no mínimo, com reticências."
+      },
+      "art": "art/drakarion.png"
+    },
+    {
+      "id": "fit-long-fullart",
+      "number": 205,
+      "rarity": "rare",
+      "element": "water",
+      "variant": "fullart",
+      "name": {
+        "pt-BR": "Leviatã das Marés Profundas"
+      },
+      "description": {
+        "pt-BR": "Full art com nome longo."
+      },
+      "art": "art/lunaris.png"
+    },
+    {
+      "id": "fit-extreme-fullart",
+      "number": 206,
+      "rarity": "legendary",
+      "element": "fire",
+      "variant": "fullart",
+      "name": {
+        "pt-BR": "Drakarion, Senhor das Cinzas Eternas e Esquecidas do Mundo"
+      },
+      "description": {
+        "pt-BR": "Full art com nome extremo."
+      },
+      "art": "art/drakarion.png"
+    }
+  ]
+}
