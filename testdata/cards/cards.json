@@ -15,7 +15,7 @@
       "id": "cervallis",
       "number": 17,
       "rarity": "uncommon",
-      "element": "plant",
+      "element": "nature",
       "name": { "pt-BR": "Cervallis" },
       "description": { "pt-BR": "Habita regiões verdes e é conhecido por sua grande agilidade." },
       "art": "art/cervallis.png"

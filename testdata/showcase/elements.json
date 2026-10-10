@@ -42,15 +42,15 @@
       "art": "art/lunaris.png"
     },
     {
-      "id": "elemento-plant",
+      "id": "elemento-nature",
       "number": 403,
       "rarity": "uncommon",
-      "element": "plant",
+      "element": "nature",
       "name": {
-        "pt-BR": "Planta"
+        "pt-BR": "Natureza"
       },
       "description": {
-        "pt-BR": "Elemento planta."
+        "pt-BR": "Elemento natureza."
       },
       "art": "art/cervallis.png"
     },
@@ -92,6 +92,58 @@
         "pt-BR": "Elemento trevas."
       },
       "art": "art/lunaris.png"
+    },
+    {
+      "id": "elemento-electric",
+      "number": 407,
+      "rarity": "epic",
+      "element": "electric",
+      "name": {
+        "pt-BR": "Elétrico"
+      },
+      "description": {
+        "pt-BR": "Elemento elétrico."
+      },
+      "art": "art/aureon.png"
+    },
+    {
+      "id": "elemento-earth",
+      "number": 408,
+      "rarity": "uncommon",
+      "element": "earth",
+      "name": {
+        "pt-BR": "Terra"
+      },
+      "description": {
+        "pt-BR": "Elemento terra."
+      },
+      "art": "art/cervallis.png"
+    },
+    {
+      "id": "elemento-ice",
+      "number": 409,
+      "rarity": "rare",
+      "element": "ice",
+      "name": {
+        "pt-BR": "Gelo"
+      },
+      "description": {
+        "pt-BR": "Elemento gelo."
+      },
+      "art": "art/lunaris.png"
+    },
+    {
+      "id": "elemento-mystic",
+      "number": 410,
+      "rarity": "legendary",
+      "element": "mystic",
+      "name": {
+        "pt-BR": "Místico"
+      },
+      "description": {
+        "pt-BR": "Elemento místico."
+      },
+      "art": "art/drakarion.png"
     }
   ]
 }

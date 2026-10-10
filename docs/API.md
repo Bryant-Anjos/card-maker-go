@@ -74,7 +74,8 @@ Lista os temas disponíveis, útil para montar seletores de raridade, elemento e
 { "success": true, "error": null, "data": [
   { "name": "default", "size": { "width": 750, "height": 1050 },
     "rarities": ["common", "uncommon", "rare", "epic", "legendary"],
-    "elements": ["beast", "fire", "water", "plant", "wind", "light", "dark"],
+    "elements": ["beast", "fire", "water", "nature", "wind", "light", "dark",
+                 "electric", "earth", "ice", "mystic"],
     "variants": ["fullart"], "hasBack": true } ] }
 ```
 

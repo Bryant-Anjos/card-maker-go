@@ -102,11 +102,12 @@ def fullart(tmp, standard_dir):
 
 def elements(tmp):
     directory = build("elements.json", os.path.join(tmp, "elements"))
-    ids = ["beast", "fire", "water", "plant", "wind", "light", "dark"]
+    ids = ["beast", "fire", "water", "nature", "wind", "light", "dark", "electric", "earth", "ice", "mystic"]
     bands = [band(open_card(directory, "elemento-" + i)) for i in ids]
     bw, bh = bands[0].size
     columns = 4
-    canvas = sheet(columns * bw + (columns + 1) * GAP, 2 * bh + 3 * GAP)
+    rows = -(-len(bands) // columns)  # ceiling division
+    canvas = sheet(columns * bw + (columns + 1) * GAP, rows * bh + (rows + 1) * GAP)
     for n, b in enumerate(bands):
         canvas.alpha_composite(b, (GAP + (n % columns) * (bw + GAP), GAP + (n // columns) * (bh + GAP)))
     save_jpeg(canvas, "elementos.jpg", 2000)

@@ -102,7 +102,8 @@ O verso, ao lado da frente:
 
 ![Frente e verso de uma carta](images/frente-e-verso.jpg)
 
-Os sete elementos de exemplo (cada ícone tem a sua cor):
+Os onze elementos de exemplo (cada ícone tem a sua cor): Fera, Fogo, Água, Natureza, Vento, Luz, Trevas,
+Elétrico, Terra, Gelo e Místico.
 
 ![Ícones de elemento do tema default](images/elementos.jpg)
 
@@ -113,7 +114,7 @@ Os sete elementos de exemplo (cada ícone tem a sua cor):
 | Cor da raridade | Vem de `theme.json` (`color`) como `--c`; tons claros e escuros são derivados com `color-mix()`, então mudar a cor no `theme.json` recolore moldura, gema, painel e brilho. |
 | Molduras por raridade | `frames/<raridade>.svg` contém só os **ornamentos** (cantos, entalhes, gema, coroa), mais elaborados a cada nível; a moldura base é comum e fica no template. Os SVGs são gerados por `internal/devtools/framegen` (`make theme-frames`). |
 | Brilho | Classes `.rarity-<id>` em `style.css` definem a intensidade (nenhum no Comum, máximo no Lendário). |
-| Ícones | `icons/<elemento>.svg`, 48×48, cada um com sua própria cor. |
+| Ícones | `icons/<elemento>.svg`, 48×48, cada um com sua própria cor. Os `id` internos (de gradientes, por exemplo) começam com `icon-<elemento>`, porque o ícone é inserido na mesma página que a moldura; um teste confere isso e o tamanho. |
 | Fontes | Lora (nome) e Source Sans 3 (textos), licença OFL, em `fonts/` com as licenças. |
 | Verso | `back.html.tmpl`: fundo azul-marinho, moldura dourada e rosa dos ventos. |
 | Nome longo | O nome começa em 62 px e encolhe até **28 px** para caber (`data-fit-min` no template). Medido: nomes de até ~36 caracteres cabem inteiros mesmo com o ícone de elemento ao lado (27 caracteres → 37 px, 31 → 32 px, 36 → 28 px); acima disso, reticências. |

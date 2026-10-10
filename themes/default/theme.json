@@ -17,10 +17,14 @@
     { "id": "beast", "label": { "pt-BR": "Fera" }, "icon": "icons/beast.svg" },
     { "id": "fire", "label": { "pt-BR": "Fogo" }, "icon": "icons/fire.svg" },
     { "id": "water", "label": { "pt-BR": "Água" }, "icon": "icons/water.svg" },
-    { "id": "plant", "label": { "pt-BR": "Planta" }, "icon": "icons/plant.svg" },
+    { "id": "nature", "label": { "pt-BR": "Natureza" }, "icon": "icons/nature.svg" },
     { "id": "wind", "label": { "pt-BR": "Vento" }, "icon": "icons/wind.svg" },
     { "id": "light", "label": { "pt-BR": "Luz" }, "icon": "icons/light.svg" },
-    { "id": "dark", "label": { "pt-BR": "Trevas" }, "icon": "icons/dark.svg" }
+    { "id": "dark", "label": { "pt-BR": "Trevas" }, "icon": "icons/dark.svg" },
+    { "id": "electric", "label": { "pt-BR": "Elétrico" }, "icon": "icons/electric.svg" },
+    { "id": "earth", "label": { "pt-BR": "Terra" }, "icon": "icons/earth.svg" },
+    { "id": "ice", "label": { "pt-BR": "Gelo" }, "icon": "icons/ice.svg" },
+    { "id": "mystic", "label": { "pt-BR": "Místico" }, "icon": "icons/mystic.svg" }
   ],
   "variants": [
     { "id": "fullart", "label": { "pt-BR": "Arte completa" }, "template": "fullart.html.tmpl" }

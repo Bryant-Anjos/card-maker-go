@@ -6,6 +6,7 @@ import (
 	"image"
 	"image/png"
 	"net/http"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -50,9 +51,10 @@ func TestListThemes(t *testing.T) {
 		t.Fatalf("themes = %+v", themes)
 	}
 	got := themes[0]
+	wantElements := []string{"beast", "fire", "water", "nature", "wind", "light", "dark", "electric", "earth", "ice", "mystic"}
 	if got.Size.Width != 75 || len(got.Rarities) != 5 || got.Rarities[0] != "common" ||
-		len(got.Elements) != 7 || len(got.Variants) != 1 || got.Variants[0] != "fullart" || !got.HasBack {
-		t.Errorf("theme summary = %+v", got)
+		!slices.Equal(got.Elements, wantElements) || len(got.Variants) != 1 || got.Variants[0] != "fullart" || !got.HasBack {
+		t.Errorf("theme summary = %+v, want elements %v", got, wantElements)
 	}
 }
 
