@@ -33,7 +33,7 @@ type Manifest struct {
 	Theme         string         `json:"theme"`
 	Locale        string         `json:"locale"`
 	Size          Size           `json:"size"`
-	Back          *Image         `json:"back,omitempty"`
+	Back          []Image        `json:"back,omitempty"`
 	Cards         []ManifestCard `json:"cards"`
 }
 
@@ -63,8 +63,8 @@ func (m Manifest) Validate() error {
 	if m.Size.Width <= 0 || m.Size.Height <= 0 {
 		p.addf("size", "width and height must be positive, got %dx%d", m.Size.Width, m.Size.Height)
 	}
-	if m.Back != nil {
-		p.addNested("back", m.Back.problems())
+	for i, img := range m.Back {
+		p.addNested(fmt.Sprintf("back[%d]", i), img.problems())
 	}
 	if len(m.Cards) == 0 {
 		p.addf("cards", "at least one card is required")

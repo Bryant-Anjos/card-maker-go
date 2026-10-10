@@ -3,7 +3,9 @@
   "theme": "default",
   "locale": "pt-BR",
   "size": { "width": 750, "height": 1050 },
-  "back": { "scale": 1, "format": "png", "path": "back.png", "width": 750, "height": 1050 },
+  "back": [
+    { "scale": 1, "format": "png", "path": "back.png", "width": 750, "height": 1050 }
+  ],
   "cards": [
     {
       "id": "vulpin",

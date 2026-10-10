@@ -132,9 +132,16 @@ MVP útil = fases 1 a 5.
 - [x] **Fase 1 — Fundação**: `go.mod`, `.tool-versions`, estrutura de pastas, `Makefile` (`check`/`build`/`cover`), `.gitignore`, README, CLI mínimo (`cardmaker version`) e teste de versão. `make check` passa.
 - [x] **Fase 2 — Contrato de dados**: pacote `pkg/cardmaker/model` (`Card`, `CardSet`, `Theme`, `Manifest`, `LocalizedText`) com validação que reporta todos os erros com o caminho do campo, parsing estrito (rejeita campos desconhecidos e dados após o JSON) e JSON Schemas em `schema/` (embutidos via `embed`). Um teste de conformidade garante que schema e validação Go aceitam e rejeitam os mesmos documentos. Dados de exemplo em `testdata/cards/cards.json`, `testdata/manifest/manifest.json` e `themes/default/theme.json`. Cobertura 97,5%.
 - [x] **Fase 3 — Tema e i18n**: `theme.Load`/`theme.LoadDir` (lê `theme.json`, valida e confere que template, stylesheet, back, frames e ícones existem, reportando todos os arquivos faltantes de uma vez; carrega via `fs.FS`, então é testável sem disco), `CardSet.ValidateAgainst(theme)` (raridade e elemento da carta precisam existir no tema, com mensagem listando os válidos) e `i18n.Resolver` (resolve nome/descrição por locale com fallback e devolve `ResolvedCard`, o que o renderer vai consumir). Cobertura 97,9%.
-  - Pendente para a fase 5: conferir que os arquivos de arte das cartas existem e têm proporção compatível; o tema `default` só carrega depois da fase 4, quando seus assets existirem.
+  - O tema `default` só carrega depois da fase 4, quando seus assets existirem.
 - [ ] Fase 4 — Renderer (design visual)
-- [ ] Fase 5 — Pipeline em lote
+- [x] **Fase 5 — Pipeline em lote** (feita antes da 4, com renderer falso, a pedido): 
+  - `render.Renderer` (interface: `Version`, `RenderCard`, `RenderBack`, sempre PNG com o tamanho do tema × escala) e `render.Fake` (retângulos na cor da raridade, sem navegador).
+  - `pipeline.Run`/`pipeline.Validate`: valida tudo antes de renderizar (tema, cartas, raridades/elementos, textos do locale, arte existente e decodificável como png/jpeg/webp), renderiza em paralelo (`errgroup`), gera 1x/2x (`@2x`) em PNG e/ou WebP e grava `OutDir/<locale>/manifest.json` de forma atômica.
+  - Cache por hash (versão do pipeline + versão do renderer + hash do tema inteiro + carta resolvida + hash da arte + escalas + formatos) em `.cache.json`; só re-renderiza o que mudou ou o que teve arquivo apagado; `-force` ignora o cache.
+  - CLI: `cardmaker validate|build|version`. `build -renderer chrome` (padrão) ainda responde que não está implementado; use `-renderer fake`.
+  - Decisão de contrato: `manifest.back` virou **lista** de imagens (escalas e formatos), como as cartas.
+  - Fixtures: tema de teste `testdata/themes/basic` (75×105 para os testes serem rápidos; o WebP em Go puro é lento em tamanho real) e artes placeholder em `testdata/cards/art` (`make testdata-art`).
+  - Limitações conhecidas: WebP é **lossless** (encoder em Go puro); arquivos órfãos de cartas removidas não são apagados; a proporção da arte não é validada (o template deve usar `object-fit: cover`). Cobertura total 91,5%, sem races.
 - [ ] Fase 6 — Docs
 - [ ] Fase 7 — API (opcional)
 

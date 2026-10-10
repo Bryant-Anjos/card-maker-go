@@ -4,29 +4,75 @@
   "title": "Output manifest",
   "description": "Describes the rendered cards for one theme and locale. This is the contract consumed by every client platform. Image paths are relative to the directory containing the manifest; texts are already resolved for the locale.",
   "type": "object",
-  "required": ["schemaVersion", "theme", "locale", "size", "cards"],
+  "required": [
+    "schemaVersion",
+    "theme",
+    "locale",
+    "size",
+    "cards"
+  ],
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": { "const": 1 },
-    "theme": { "type": "string", "minLength": 1 },
-    "locale": { "$ref": "defs.schema.json#/$defs/locale" },
-    "size": { "$ref": "defs.schema.json#/$defs/size" },
-    "back": { "$ref": "#/$defs/image" },
+    "schemaVersion": {
+      "const": 1
+    },
+    "theme": {
+      "type": "string",
+      "minLength": 1
+    },
+    "locale": {
+      "$ref": "defs.schema.json#/$defs/locale"
+    },
+    "size": {
+      "$ref": "defs.schema.json#/$defs/size"
+    },
+    "back": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/image"
+      },
+      "description": "Card back images, one per scale and format."
+    },
     "cards": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "rarity", "name", "images"],
+        "required": [
+          "id",
+          "rarity",
+          "name",
+          "images"
+        ],
         "additionalProperties": false,
         "properties": {
-          "id": { "$ref": "defs.schema.json#/$defs/identifier" },
-          "number": { "type": "integer", "minimum": 0 },
-          "rarity": { "$ref": "defs.schema.json#/$defs/identifier" },
-          "element": { "$ref": "defs.schema.json#/$defs/identifier" },
-          "name": { "type": "string", "minLength": 1 },
-          "description": { "type": "string" },
-          "images": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/image" } }
+          "id": {
+            "$ref": "defs.schema.json#/$defs/identifier"
+          },
+          "number": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "rarity": {
+            "$ref": "defs.schema.json#/$defs/identifier"
+          },
+          "element": {
+            "$ref": "defs.schema.json#/$defs/identifier"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string"
+          },
+          "images": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/$defs/image"
+            }
+          }
         }
       }
     }
@@ -34,14 +80,36 @@
   "$defs": {
     "image": {
       "type": "object",
-      "required": ["scale", "format", "path", "width", "height"],
+      "required": [
+        "scale",
+        "format",
+        "path",
+        "width",
+        "height"
+      ],
       "additionalProperties": false,
       "properties": {
-        "scale": { "type": "integer", "minimum": 1 },
-        "format": { "enum": ["png", "webp"] },
-        "path": { "$ref": "defs.schema.json#/$defs/relativePath" },
-        "width": { "type": "integer", "minimum": 1 },
-        "height": { "type": "integer", "minimum": 1 }
+        "scale": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "format": {
+          "enum": [
+            "png",
+            "webp"
+          ]
+        },
+        "path": {
+          "$ref": "defs.schema.json#/$defs/relativePath"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        }
       }
     }
   }

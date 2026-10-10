@@ -13,7 +13,7 @@ func validManifest() model.Manifest {
 		Theme:         "default",
 		Locale:        "pt-BR",
 		Size:          model.Size{Width: 750, Height: 1050},
-		Back:          &model.Image{Scale: 1, Format: "png", Path: "back.png", Width: 750, Height: 1050},
+		Back:          []model.Image{{Scale: 1, Format: "png", Path: "back.png", Width: 750, Height: 1050}},
 		Cards: []model.ManifestCard{
 			{
 				ID: "vulpin", Number: 1, Rarity: "common", Element: "beast",
@@ -46,7 +46,7 @@ func TestManifestValidate(t *testing.T) {
 		{"zero scale", func(m *model.Manifest) { m.Cards[0].Images[0].Scale = 0 }, "scale"},
 		{"image path escapes", func(m *model.Manifest) { m.Cards[0].Images[0].Path = "../x.png" }, "path"},
 		{"zero image width", func(m *model.Manifest) { m.Cards[0].Images[1].Width = 0 }, "width"},
-		{"invalid back", func(m *model.Manifest) { m.Back.Path = "" }, "back"},
+		{"invalid back", func(m *model.Manifest) { m.Back[0].Path = "" }, "back[0].path"},
 	}
 
 	for _, tt := range tests {
