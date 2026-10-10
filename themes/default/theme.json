@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "name": "default",
+  "size": { "width": 750, "height": 1050 },
+  "template": "card.html.tmpl",
+  "stylesheet": "style.css",
+  "back": "back.html.tmpl",
+  "rarities": [
+    { "id": "common", "label": { "pt-BR": "Comum" }, "color": "#8b9099", "frame": "frames/common.svg" },
+    { "id": "uncommon", "label": { "pt-BR": "Incomum" }, "color": "#34a46b", "frame": "frames/uncommon.svg" },
+    { "id": "rare", "label": { "pt-BR": "Raro" }, "color": "#3b82f6", "frame": "frames/rare.svg" },
+    { "id": "epic", "label": { "pt-BR": "Épico" }, "color": "#a855f7", "frame": "frames/epic.svg" },
+    { "id": "legendary", "label": { "pt-BR": "Lendário" }, "color": "#f5c04a", "frame": "frames/legendary.svg" }
+  ],
+  "elements": [
+    { "id": "beast", "label": { "pt-BR": "Fera" }, "icon": "icons/beast.svg" },
+    { "id": "fire", "label": { "pt-BR": "Fogo" }, "icon": "icons/fire.svg" },
+    { "id": "water", "label": { "pt-BR": "Água" }, "icon": "icons/water.svg" },
+    { "id": "plant", "label": { "pt-BR": "Planta" }, "icon": "icons/plant.svg" },
+    { "id": "wind", "label": { "pt-BR": "Vento" }, "icon": "icons/wind.svg" },
+    { "id": "light", "label": { "pt-BR": "Luz" }, "icon": "icons/light.svg" },
+    { "id": "dark", "label": { "pt-BR": "Trevas" }, "icon": "icons/dark.svg" }
+  ]
+}

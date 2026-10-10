@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "cards": [
+    {
+      "id": "vulpin",
+      "number": 1,
+      "rarity": "common",
+      "element": "beast",
+      "name": { "pt-BR": "Vulpin" },
+      "description": { "pt-BR": "Pequena criatura curiosa que vive em florestas tranquilas." },
+      "art": "art/vulpin.png"
+    },
+    {
+      "id": "cervallis",
+      "number": 17,
+      "rarity": "uncommon",
+      "element": "plant",
+      "name": { "pt-BR": "Cervallis" },
+      "description": { "pt-BR": "Habita regiões verdes e é conhecido por sua grande agilidade." },
+      "art": "art/cervallis.png"
+    },
+    {
+      "id": "lunaris",
+      "number": 32,
+      "rarity": "rare",
+      "element": "dark",
+      "name": { "pt-BR": "Lunaris" },
+      "description": { "pt-BR": "Sua pelagem brilha com a luz da lua, guiando viajantes perdidos." },
+      "art": "art/lunaris.png"
+    },
+    {
+      "id": "aureon",
+      "number": 54,
+      "rarity": "epic",
+      "element": "light",
+      "name": { "pt-BR": "Aureon" },
+      "description": { "pt-BR": "Dizem que suas asas carregam a luz do amanhecer." },
+      "art": "art/aureon.png"
+    },
+    {
+      "id": "drakarion",
+      "number": 99,
+      "rarity": "legendary",
+      "element": "fire",
+      "name": { "pt-BR": "Drakarion" },
+      "description": { "pt-BR": "Uma lenda viva, capaz de moldar o céu e a terra com seu poder." },
+      "art": "art/drakarion.png"
+    }
+  ]
+}

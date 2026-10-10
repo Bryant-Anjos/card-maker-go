@@ -127,17 +127,26 @@ MVP útil = fases 1 a 5.
 - `go` instalado via asdf, sem versão definida globalmente; resolvido com `golang 1.27.1` no `.tool-versions` do projeto.
 - Nenhum Chrome/Chromium no PATH, mas há binários utilizáveis nos caches do Playwright (`~/.cache/ms-playwright/chromium-*/chrome-linux64/chrome`) e do Puppeteer (`~/.cache/puppeteer/chrome/`), além do `brave-browser`. O renderer deve aceitar o caminho do Chrome por flag/variável de ambiente.
 
-## 11. Progresso
+## 10. Progresso
 
 - [x] **Fase 1 — Fundação**: `go.mod`, `.tool-versions`, estrutura de pastas, `Makefile` (`check`/`build`/`cover`), `.gitignore`, README, CLI mínimo (`cardmaker version`) e teste de versão. `make check` passa.
-- [ ] Fase 2 — Contrato de dados
+- [x] **Fase 2 — Contrato de dados**: pacote `pkg/cardmaker/model` (`Card`, `CardSet`, `Theme`, `Manifest`, `LocalizedText`) com validação que reporta todos os erros com o caminho do campo, parsing estrito (rejeita campos desconhecidos e dados após o JSON) e JSON Schemas em `schema/` (embutidos via `embed`). Um teste de conformidade garante que schema e validação Go aceitam e rejeitam os mesmos documentos. Dados de exemplo em `testdata/cards/cards.json`, `testdata/manifest/manifest.json` e `themes/default/theme.json`. Cobertura 97,5%.
 - [ ] Fase 3 — Tema e i18n
 - [ ] Fase 4 — Renderer (design visual)
 - [ ] Fase 5 — Pipeline em lote
 - [ ] Fase 6 — Docs
 - [ ] Fase 7 — API (opcional)
 
-## 10. Critérios de aceite do MVP
+## 11. Contrato de dados (resumo da fase 2)
+
+- `schemaVersion` é obrigatório e hoje vale `1` em cards, theme e manifest.
+- **Caminhos** (`art`, `frame`, `icon`, `template`, `stylesheet`, `back` e `images[].path`) são relativos, com `/`, sem segmentos vazios, `.` ou `..`, para que dados de entrada nunca apontem para fora do diretório raiz. O caminho de `art` é relativo à pasta do arquivo de cartas.
+- **Identificadores** (`id`, `rarity`, `element`) seguem `^[a-z0-9][a-z0-9_-]*$`, pois viram nomes de arquivo.
+- **Textos** são `LocalizedText` (`{"pt-BR": "..."}`); `name` exige ao menos um texto não vazio. A resolução tenta o locale exato, depois só o idioma (`en-US` → `en`) e depois o fallback.
+- O **manifest** já traz os textos resolvidos para o locale, então quem consome não precisa conhecer i18n.
+- Os JSON Schemas usam apenas regex portáveis (sem lookahead).
+
+## 12. Critérios de aceite do MVP
 
 - [ ] `cardmaker build` gera PNGs para todas as cartas de `testdata/` com o tema `default`
 - [ ] O visual das 5 raridades e do verso é fiel à referência

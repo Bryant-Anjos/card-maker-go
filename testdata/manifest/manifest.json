@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "theme": "default",
+  "locale": "pt-BR",
+  "size": { "width": 750, "height": 1050 },
+  "back": { "scale": 1, "format": "png", "path": "back.png", "width": 750, "height": 1050 },
+  "cards": [
+    {
+      "id": "vulpin",
+      "number": 1,
+      "rarity": "common",
+      "element": "beast",
+      "name": "Vulpin",
+      "description": "Pequena criatura curiosa que vive em florestas tranquilas.",
+      "images": [
+        { "scale": 1, "format": "png", "path": "cards/vulpin.png", "width": 750, "height": 1050 },
+        { "scale": 2, "format": "webp", "path": "cards/vulpin@2x.webp", "width": 1500, "height": 2100 }
+      ]
+    }
+  ]
+}

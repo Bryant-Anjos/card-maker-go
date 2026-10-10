@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://card-maker-go/schema/defs.schema.json",
+  "title": "Shared definitions",
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*$",
+      "description": "Lowercase identifier, safe to use as a file name."
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
+      "description": "Locale code such as pt-BR or en."
+    },
+    "localizedText": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/locale"
+      },
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Texts keyed by locale code."
+    },
+    "relativePath": {
+      "type": "string",
+      "pattern": "^(?:[^/\\\\.][^/\\\\]*|\\.[^/\\\\.][^/\\\\]*|\\.\\.[^/\\\\]+)(?:/(?:[^/\\\\.][^/\\\\]*|\\.[^/\\\\.][^/\\\\]*|\\.\\.[^/\\\\]+))*$",
+      "description": "Relative path with forward slashes and no empty, \".\" or \"..\" segments, so it stays inside its root directory."
+    },
+    "size": {
+      "type": "object",
+      "required": [
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}
