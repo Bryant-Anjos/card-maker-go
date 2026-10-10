@@ -44,6 +44,8 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 	themesDir := fs.String("themes", "themes", "directory whose subdirectories are themes")
 	rendererName := fs.String("renderer", renderers.Chrome, "renderer: chrome or fake")
 	browserPath := fs.String("chrome", "", "browser executable (default: $"+chrome.EnvBrowserPath+", then PATH)")
+	noSandbox := fs.Bool("no-sandbox", chrome.NoSandboxFromEnv(getenv),
+		"run the browser without its sandbox, only for containers (default: $"+chrome.EnvNoSandbox+")")
 	maxConcurrent := fs.Int("max-concurrent", server.DefaultMaxConcurrent, "renders in parallel")
 	queueTimeout := fs.Duration("queue-timeout", server.DefaultQueueTimeout, "how long a request waits for a free slot before getting 503")
 	maxUploadMB := fs.Int64("max-upload-mb", server.DefaultMaxUploadBytes>>20, "largest accepted request body, in MiB")
@@ -66,7 +68,7 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 		return exitFailure
 	}
 
-	renderer, closeRenderer, err := renderers.Open(*rendererName, *browserPath)
+	renderer, closeRenderer, err := renderers.Open(*rendererName, renderers.Options{BrowserPath: *browserPath, NoSandbox: *noSandbox})
 	if err != nil {
 		fmt.Fprintln(stderr, err)
 		return exitFailure

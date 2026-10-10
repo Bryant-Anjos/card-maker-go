@@ -9,7 +9,7 @@ import (
 )
 
 func TestOpenFake(t *testing.T) {
-	r, closeFn, err := renderers.Open(renderers.Fake, "")
+	r, closeFn, err := renderers.Open(renderers.Fake, renderers.Options{})
 
 	if err != nil || r == nil {
 		t.Fatalf("Open(fake) = (%v, %v)", r, err)
@@ -20,7 +20,7 @@ func TestOpenFake(t *testing.T) {
 }
 
 func TestOpenUnknown(t *testing.T) {
-	_, _, err := renderers.Open("magic", "")
+	_, _, err := renderers.Open("magic", renderers.Options{})
 
 	if err == nil || !strings.Contains(err.Error(), "magic") || !strings.Contains(err.Error(), "chrome") {
 		t.Errorf("error = %v, want it to name the unknown renderer and the valid ones", err)
@@ -28,7 +28,7 @@ func TestOpenUnknown(t *testing.T) {
 }
 
 func TestOpenChromeWithMissingBrowser(t *testing.T) {
-	_, _, err := renderers.Open(renderers.Chrome, "/nope/chrome")
+	_, _, err := renderers.Open(renderers.Chrome, renderers.Options{BrowserPath: "/nope/chrome"})
 
 	if err == nil || !strings.Contains(err.Error(), "/nope/chrome") {
 		t.Errorf("error = %v", err)
@@ -40,7 +40,7 @@ func TestOpenChrome(t *testing.T) {
 		t.Skipf("no browser available: %v", err)
 	}
 
-	r, closeFn, err := renderers.Open(renderers.Chrome, "")
+	r, closeFn, err := renderers.Open(renderers.Chrome, renderers.Options{})
 	if err != nil {
 		t.Fatalf("Open(chrome): %v", err)
 	}

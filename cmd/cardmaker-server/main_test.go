@@ -165,6 +165,14 @@ func TestTokenFromEnvironment(t *testing.T) {
 	}
 }
 
+func TestAcceptsNoSandboxFlag(t *testing.T) {
+	_, stop := startServer(t, nil, "-no-sandbox")
+
+	if code := stop(); code != 0 {
+		t.Errorf("exit code = %d, want 0", code)
+	}
+}
+
 func TestIsLoopbackAddress(t *testing.T) {
 	tests := map[string]bool{
 		"127.0.0.1:8080": true,

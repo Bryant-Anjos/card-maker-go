@@ -15,15 +15,20 @@ const (
 	Fake   = "fake"   // flat colored rectangles, no browser needed
 )
 
+// Options holds the settings that only apply to the chrome renderer.
+type Options struct {
+	BrowserPath string // when empty, see chrome.FindBrowser
+	NoSandbox   bool   // see chrome.Options.NoSandbox
+}
+
 // Open starts the named renderer and returns it with a function that releases
-// its resources (the browser, for chrome). browserPath only applies to chrome;
-// when empty the browser is looked up as described by chrome.FindBrowser.
-func Open(name, browserPath string) (render.Renderer, func() error, error) {
+// its resources (the browser, for chrome).
+func Open(name string, opts Options) (render.Renderer, func() error, error) {
 	switch name {
 	case Fake:
 		return render.NewFake(), func() error { return nil }, nil
 	case Chrome:
-		r, err := chrome.New(chrome.Options{BrowserPath: browserPath})
+		r, err := chrome.New(chrome.Options{BrowserPath: opts.BrowserPath, NoSandbox: opts.NoSandbox})
 		if err != nil {
 			return nil, nil, err
 		}

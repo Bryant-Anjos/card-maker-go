@@ -1,0 +1,24 @@
+# Example deployment of the API. Start with:
+#   CARDMAKER_API_TOKEN=a-long-random-token docker compose up --build
+# The API is published on localhost only; put a reverse proxy with TLS in
+# front of it before exposing it any further (see docs/API.md).
+services:
+  cardmaker:
+    build: .
+    init: true # reaps the browser's child processes
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      CARDMAKER_API_TOKEN: ${CARDMAKER_API_TOKEN:?set CARDMAKER_API_TOKEN}
+    # The browser sandbox is off inside the container, so the container itself
+    # is locked down:
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 2g
+    pids_limit: 512
+    restart: unless-stopped

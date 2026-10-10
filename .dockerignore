@@ -1,0 +1,8 @@
+.git
+bin/
+out/
+coverage.out
+docs/
+testdata/
+.claude/
+*.md

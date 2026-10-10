@@ -10,6 +10,7 @@ Documentação:
 - [docs/CONTRATO.md](docs/CONTRATO.md): formato das cartas, do tema e do manifest (o que outros projetos precisam saber)
 - [docs/INTEGRACAO.md](docs/INTEGRACAO.md): como consumir a saída na web, em apps nativos, engines e Go
 - [docs/API.md](docs/API.md): servidor HTTP para gerar cartas sob demanda (`cardmaker-server`)
+- [docs/DOCKER.md](docs/DOCKER.md): imagem Docker (CLI e API), compose e o sandbox do Chromium
 - [docs/TEMAS.md](docs/TEMAS.md): como criar ou alterar um tema (dados do template, boas práticas, tema `default`)
 - [docs/PLAN.md](docs/PLAN.md): plano de implementação e progresso
 - [Design de referência](docs/reference/card-design-reference.png)
@@ -31,7 +32,7 @@ Para gerar cartas sob demanda por HTTP, use o `cardmaker-server` (veja [docs/API
 CARDMAKER_API_TOKEN=um-token bin/cardmaker-server -themes themes
 ```
 
-A renderização usa um navegador Chromium headless. Ele é procurado em `-chrome <caminho>`, depois na
+A renderização usa um navegador Chromium headless (ou use a [imagem Docker](docs/DOCKER.md), que já o inclui). Ele é procurado em `-chrome <caminho>`, depois na
 variável `CARDMAKER_CHROME` e depois no `PATH` (`chrome-headless-shell`, `chromium`, `google-chrome`,
 `brave-browser`, ...). Reexecutar o `build` só renderiza o que mudou (`-force` ignora o cache);
 `-renderer fake` gera retângulos coloridos sem navegador, útil para testar o pipeline.

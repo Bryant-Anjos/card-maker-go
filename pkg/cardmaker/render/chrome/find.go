@@ -5,10 +5,28 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
-// EnvBrowserPath names the environment variable that points to the browser.
-const EnvBrowserPath = "CARDMAKER_CHROME"
+// Environment variables read by the commands.
+const (
+	// EnvBrowserPath points to the browser executable.
+	EnvBrowserPath = "CARDMAKER_CHROME"
+
+	// EnvNoSandbox turns on Options.NoSandbox; see NoSandboxFromEnv.
+	EnvNoSandbox = "CARDMAKER_CHROME_NO_SANDBOX"
+)
+
+// NoSandboxFromEnv reports whether EnvNoSandbox is set to a true value
+// ("1", "true", "yes" or "on", in any case).
+func NoSandboxFromEnv(getenv func(string) string) bool {
+	switch strings.ToLower(strings.TrimSpace(getenv(EnvNoSandbox))) {
+	case "1", "true", "yes", "on":
+		return true
+	default:
+		return false
+	}
+}
 
 // browserCandidates are Chromium-based executables searched in PATH, in order.
 var browserCandidates = []string{

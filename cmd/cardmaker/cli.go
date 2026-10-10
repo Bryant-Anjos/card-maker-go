@@ -106,6 +106,8 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 	force := fs.Bool("force", false, "ignore the cache and render everything")
 	rendererName := fs.String("renderer", renderers.Chrome, "renderer: chrome or fake")
 	browserPath := fs.String("chrome", "", "browser executable (default: $"+chrome.EnvBrowserPath+", then PATH)")
+	noSandbox := fs.Bool("no-sandbox", chrome.NoSandboxFromEnv(os.Getenv),
+		"run the browser without its sandbox, only for containers (default: $"+chrome.EnvNoSandbox+")")
 
 	if err := fs.Parse(args); err != nil {
 		return exitUsage
@@ -125,7 +127,7 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 	opts.Concurrency = *concurrency
 	opts.Force = *force
 
-	renderer, closeRenderer, err := renderers.Open(*rendererName, *browserPath)
+	renderer, closeRenderer, err := renderers.Open(*rendererName, renderers.Options{BrowserPath: *browserPath, NoSandbox: *noSandbox})
 	if err != nil {
 		fmt.Fprintln(stderr, err)
 		return exitFailure

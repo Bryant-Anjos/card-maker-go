@@ -49,6 +49,11 @@ type transparentBackgroundParams struct {
 type Options struct {
 	BrowserPath string        // browser executable; see FindBrowser for the default lookup
 	Timeout     time.Duration // limit per rendered image, default 60s
+
+	// NoSandbox launches the browser with --no-sandbox. Only enable it inside
+	// a container (or similar) that already isolates the process: containers
+	// usually forbid the user namespaces the browser sandbox needs.
+	NoSandbox bool
 }
 
 // Renderer implements render.Renderer with a headless browser. Create it with
@@ -84,6 +89,9 @@ func New(opts Options) (*Renderer, error) {
 		chromedp.Flag("font-render-hinting", "none"),
 		chromedp.Flag("force-color-profile", "srgb"),
 	)
+	if opts.NoSandbox {
+		allocOpts = append(allocOpts, chromedp.NoSandbox)
+	}
 	allocCtx, cancelAlloc := chromedp.NewExecAllocator(context.Background(), allocOpts...)
 	browserCtx, cancelBrowser := chromedp.NewContext(allocCtx)
 

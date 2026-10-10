@@ -18,6 +18,7 @@ CARDMAKER_API_TOKEN=um-token-longo bin/cardmaker-server -themes themes -addr 127
 | `-themes` | `themes` | Pasta cujas subpastas são temas; o **nome da pasta** é o nome do tema na API. |
 | `-renderer` | `chrome` | `chrome` (real) ou `fake` (retângulos coloridos, sem navegador). |
 | `-chrome` | | Executável do navegador (padrão: `CARDMAKER_CHROME`, depois o `PATH`). |
+| `-no-sandbox` | `$CARDMAKER_CHROME_NO_SANDBOX` | Roda o navegador sem o sandbox; só para contêineres (veja [DOCKER.md](DOCKER.md)). |
 | `-max-concurrent` | `4` | Renderizações em paralelo. |
 | `-queue-timeout` | `10s` | Quanto uma requisição espera por uma vaga antes de receber 503. |
 | `-max-upload-mb` | `20` | Maior corpo de requisição aceito. |
@@ -155,5 +156,5 @@ async function renderCard({ theme, card, art, scale = 1, format = "png" }) {
 - O servidor **não faz cache** de imagens: o mesmo pedido é renderizado de novo. Para uma coleção, prefira
   o `build`, que só re-renderiza o que mudou.
 - O navegador sobe uma vez com o servidor e é encerrado no desligamento; cada imagem usa uma aba própria.
-- Rodando em contêiner, o Chrome costuma precisar de flags de sandbox; isso ainda não está tratado (não há
-  `Dockerfile` no projeto).
+- Em contêiner, use a imagem do projeto (veja [DOCKER.md](DOCKER.md)): ela já trata o sandbox do Chromium,
+  roda sem privilégios e inclui um `docker-compose.yml` com as restrições recomendadas.

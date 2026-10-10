@@ -137,6 +137,15 @@ func TestBuildWithChromeRenderer(t *testing.T) {
 	}
 }
 
+func TestBuildAcceptsNoSandboxFlag(t *testing.T) {
+	code, _, stderr := execute("build", "-cards", cardsFile, "-theme", themeDir, "-out", t.TempDir(),
+		"-renderer", "fake", "-scales", "1", "-no-sandbox")
+
+	if code != 0 {
+		t.Errorf("code = %d, stderr = %s", code, stderr)
+	}
+}
+
 func TestUnknownRenderer(t *testing.T) {
 	code, _, errOut := execute("build", "-cards", cardsFile, "-theme", themeDir, "-out", t.TempDir(), "-renderer", "magic")
 
