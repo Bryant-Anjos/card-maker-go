@@ -11,6 +11,7 @@ import (
 
 	"golang.org/x/image/webp"
 
+	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/imgenc"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/model"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/pipeline"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/render"
@@ -195,6 +196,37 @@ func TestRunCaching(t *testing.T) {
 
 		if got := fake.CardCalls() - before; got != 10 {
 			t.Errorf("rendered %d card images, want 10 (both scales for every card)", got)
+		}
+	})
+
+	t.Run("changed webp quality re-renders", func(t *testing.T) {
+		ws := newWorkspace(t)
+		fake := render.NewFake()
+		opts := ws.options()
+		opts.WebPQuality = 90
+		mustRun(t, opts, fake)
+		before := fake.CardCalls()
+
+		opts.WebPQuality = 60
+		mustRun(t, opts, fake)
+
+		if got := fake.CardCalls() - before; got != 10 {
+			t.Errorf("rendered %d card images, want 10 (a new quality changes every webp)", got)
+		}
+	})
+
+	t.Run("default quality equals the explicit default", func(t *testing.T) {
+		ws := newWorkspace(t)
+		fake := render.NewFake()
+		mustRun(t, ws.options(), fake)
+		before := fake.CardCalls()
+
+		opts := ws.options()
+		opts.WebPQuality = imgenc.DefaultWebPQuality
+		mustRun(t, opts, fake)
+
+		if got := fake.CardCalls() - before; got != 0 {
+			t.Errorf("rendered %d card images, want 0: quality 0 and the default are the same output", got)
 		}
 	})
 
@@ -429,6 +461,8 @@ func TestOptionsValidation(t *testing.T) {
 		{"zero scale", func(o *pipeline.Options) { o.Scales = []int{0} }, "scale"},
 		{"unsupported format", func(o *pipeline.Options) { o.Formats = []string{"gif"} }, "format"},
 		{"negative concurrency", func(o *pipeline.Options) { o.Concurrency = -1 }, "concurrency"},
+		{"webp quality above 100", func(o *pipeline.Options) { o.WebPQuality = 101 }, "quality"},
+		{"negative webp quality", func(o *pipeline.Options) { o.WebPQuality = -1 }, "quality"},
 	}
 
 	for _, tt := range tests {

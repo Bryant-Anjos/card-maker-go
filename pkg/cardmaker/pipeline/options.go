@@ -25,6 +25,7 @@ type Options struct {
 
 	Scales      []int    // image scales, default [1, 2]
 	Formats     []string // image formats, default ["png"]
+	WebPQuality int      // 1-99 lossy, 100 lossless; default imgenc.DefaultWebPQuality
 	Concurrency int      // parallel cards, default 4
 	Force       bool     // ignore the cache and render everything
 }
@@ -45,6 +46,13 @@ func (o Options) normalized() (Options, error) {
 	}
 	if _, err := i18n.NewResolver(o.Locale, o.Fallback); err != nil {
 		errs = append(errs, err)
+	}
+
+	if err := imgenc.ValidateWebPQuality(o.WebPQuality); err != nil {
+		errs = append(errs, err)
+	}
+	if o.WebPQuality == 0 {
+		o.WebPQuality = imgenc.DefaultWebPQuality
 	}
 
 	scales, err := normalizeScales(o.Scales)

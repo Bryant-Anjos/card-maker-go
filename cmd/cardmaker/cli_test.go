@@ -145,6 +145,24 @@ func TestUnknownRenderer(t *testing.T) {
 	}
 }
 
+func TestBuildWebPQualityFlag(t *testing.T) {
+	out := t.TempDir()
+	base := []string{"build", "-cards", cardsFile, "-theme", themeDir, "-out", out,
+		"-renderer", "fake", "-scales", "1", "-formats", "webp"}
+
+	if code, _, stderr := execute(append(base, "-webp-quality", "60")...); code != 0 {
+		t.Fatalf("quality 60: code = %d, stderr = %s", code, stderr)
+	}
+	if _, err := os.Stat(filepath.Join(out, "pt-BR", "cards", "vulpin.webp")); err != nil {
+		t.Errorf("missing webp output: %v", err)
+	}
+
+	code, _, stderr := execute(append(base, "-webp-quality", "101")...)
+	if code != 1 || !strings.Contains(stderr, "quality") {
+		t.Errorf("quality 101: code = %d, stderr = %q, want a quality error", code, stderr)
+	}
+}
+
 func TestParseCommaList(t *testing.T) {
 	if _, err := parseScales("1,x"); err == nil {
 		t.Error("expected error for non-numeric scale")

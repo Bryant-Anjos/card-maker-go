@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker"
+	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/imgenc"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/pipeline"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/render/chrome"
 	"github.com/Bryant-Anjos/card-maker-go/pkg/cardmaker/renderers"
@@ -100,6 +101,7 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 	out := fs.String("out", "", "output directory (required); files go to <out>/<locale>/")
 	scales := fs.String("scales", "1,2", "comma-separated image scales")
 	formats := fs.String("formats", "png", "comma-separated image formats: png, webp")
+	webpQuality := fs.Int("webp-quality", imgenc.DefaultWebPQuality, "WebP quality: 1-99 lossy, 100 lossless")
 	concurrency := fs.Int("concurrency", 0, "cards rendered in parallel (default 4)")
 	force := fs.Bool("force", false, "ignore the cache and render everything")
 	rendererName := fs.String("renderer", renderers.Chrome, "renderer: chrome or fake")
@@ -119,6 +121,7 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 	opts.OutDir = *out
 	opts.Scales = parsedScales
 	opts.Formats = splitList(*formats)
+	opts.WebPQuality = *webpQuality
 	opts.Concurrency = *concurrency
 	opts.Force = *force
 

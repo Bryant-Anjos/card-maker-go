@@ -168,8 +168,9 @@ copiada para um CDN, um bucket ou o diretório de assets de um app sem alterar n
 
 ## Limitações atuais
 
-- O WebP é sempre **lossless** (o encoder em Go puro não tem modo lossy), então os arquivos são
-  maiores que um WebP lossy típico.
+- O WebP é codificado com **perda** por padrão (qualidade 90, escolhida por medição: PSNR acima de 40 dB e
+  ~11x menor que o PNG em 2x; o canal alfa fica sempre exato). Qualidade 100 gera WebP sem perda, exato
+  pixel a pixel, mas bem maior e mais lento. Veja `-webp-quality` no README.
 - Ao remover uma carta dos dados, os arquivos antigos dela não são apagados da pasta de saída (o
   manifest deixa de listá-los).
 - A proporção da arte não é validada; o template deve recortar a ilustração (`object-fit: cover`).

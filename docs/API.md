@@ -96,7 +96,8 @@ Renderiza uma carta e responde com a imagem (`image/png` ou `image/webp`).
 |---|---|---|
 | `theme` | sim | Nome do tema (veja `/v1/themes`). |
 | `scale` | não | Inteiro de 1 a 3. Padrão `1`. A imagem tem `size × scale` pixels. |
-| `format` | não | `png` (padrão) ou `webp` (sem perda). |
+| `format` | não | `png` (padrão) ou `webp`. |
+| `quality` | não | Só para `webp`: de 1 a 100, padrão `90` (com perda, visualmente idêntico). `100` é sem perda. |
 | `locale` | não | Idioma dos textos. Padrão `pt-BR`. |
 | `fallback` | não | Idioma usado quando falta tradução. Padrão: o próprio `locale`. |
 

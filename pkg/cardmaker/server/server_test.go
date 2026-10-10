@@ -71,6 +71,9 @@ func TestRenderCard(t *testing.T) {
 		{"scale 2", "theme=basic&scale=2", "image/png", 150, 210, false},
 		{"webp", "theme=basic&format=webp", "image/webp", 75, 105, true},
 		{"explicit locale", "theme=basic&locale=en&fallback=pt-BR", "image/png", 75, 105, false},
+		{"webp with quality", "theme=basic&format=webp&quality=60", "image/webp", 75, 105, true},
+		{"webp lossless", "theme=basic&format=webp&quality=100", "image/webp", 75, 105, true},
+		{"quality is ignored for png", "theme=basic&quality=60", "image/png", 75, 105, false},
 	}
 
 	for _, tt := range tests {
@@ -156,6 +159,9 @@ func TestRenderCardRejectsBadRequests(t *testing.T) {
 		{"scale zero", "theme=basic&scale=0", goodCard, art, 400, "scale"},
 		{"scale above the limit", "theme=basic&scale=4", goodCard, art, 400, "scale"},
 		{"unsupported format", "theme=basic&format=gif", goodCard, art, 400, "format"},
+		{"quality not a number", "theme=basic&format=webp&quality=high", goodCard, art, 400, "quality"},
+		{"quality zero", "theme=basic&format=webp&quality=0", goodCard, art, 400, "quality"},
+		{"quality above 100", "theme=basic&format=webp&quality=101", goodCard, art, 400, "quality"},
 		{"invalid locale", "theme=basic&locale=português", goodCard, art, 400, "locale"},
 		{"missing card part", "theme=basic", "", art, 400, "card"},
 		{"missing art part", "theme=basic", goodCard, nil, 400, "art"},

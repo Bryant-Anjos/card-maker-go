@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"sync/atomic"
 
 	"golang.org/x/sync/errgroup"
@@ -211,7 +212,7 @@ func (b *build) buildCard(ctx context.Context, input cardInput) ([]model.Image, 
 
 	cacheName := "card:" + card.ID
 	key := keyOf(version, b.renderer.Version(), b.in.themeHash, string(cardJSON), hashBytes(art),
-		joinInts(b.opts.Scales), fmt.Sprint(b.opts.Formats))
+		joinInts(b.opts.Scales), fmt.Sprint(b.opts.Formats), strconv.Itoa(b.opts.WebPQuality))
 
 	if b.upToDate(cacheName, key, planned) {
 		b.skipped.Add(int64(len(b.opts.Scales)))
@@ -235,7 +236,7 @@ func (b *build) buildCard(ctx context.Context, input cardInput) ([]model.Image, 
 func (b *build) buildBack(ctx context.Context) ([]model.Image, error) {
 	planned := b.plannedImages("", backBaseName)
 	key := keyOf(version, backBaseName, b.renderer.Version(), b.in.themeHash,
-		joinInts(b.opts.Scales), fmt.Sprint(b.opts.Formats))
+		joinInts(b.opts.Scales), fmt.Sprint(b.opts.Formats), strconv.Itoa(b.opts.WebPQuality))
 
 	if b.upToDate(backBaseName, key, planned) {
 		b.skipped.Add(int64(len(b.opts.Scales)))
@@ -287,7 +288,7 @@ func (b *build) renderScales(planned []model.Image, renderScale func(scale int) 
 			return fmt.Errorf("render at %dx: %w", scale, err)
 		}
 
-		encoded, err := imgenc.EncodeAll(pngData, b.opts.Formats)
+		encoded, err := imgenc.EncodeAll(pngData, b.opts.Formats, imgenc.Options{WebPQuality: b.opts.WebPQuality})
 		if err != nil {
 			return err
 		}

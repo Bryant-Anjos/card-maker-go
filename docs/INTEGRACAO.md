@@ -24,7 +24,7 @@ Escolhas úteis:
 | Decisão | Recomendação |
 |---|---|
 | Escalas | `1,2` cobre web e a maioria dos celulares; acrescente `3` para telas muito densas. |
-| Formatos | PNG funciona em todo lugar; WebP é opcional (lossless, veja as limitações no contrato). |
+| Formatos | PNG funciona em todo lugar e é exato. WebP (padrão: qualidade 90) fica cerca de 11x menor e é visualmente idêntico: prefira-o para web e celular. `-webp-quality 100` gera WebP sem perda. |
 | Idiomas | Um diretório por locale, cada um com seu manifest. Troque de idioma trocando o diretório base. |
 | Versionar a saída | Trate `out/` como artefato de build; publique no CDN com o conteúdo do jogo. |
 
@@ -98,6 +98,10 @@ for _, card := range manifest.Cards {
 
 ## Boas práticas
 
+- **WebP em programas Go**: os decodificadores de WebP do ecossistema Go (verificado com
+  `golang.org/x/image/webp` e `gen2brain/webp`) convertem a cor do WebP **com perda** de forma ligeiramente
+  diferente do libwebp, deslocando as cores em até ~9 níveis. Navegadores, Android, iOS, Flutter e engines
+  usam o libwebp e exibem corretamente. Em código Go que precise dos pixels, use o PNG.
 - **Não construa caminhos por convenção**; use o `path` do manifest.
 - **Ordem**: `cards[]` segue a ordem do arquivo de cartas, útil para listar a coleção por número.
 - **Variantes**: `cards[].variant` (ex.: `fullart`) permite filtrar ou destacar versões especiais

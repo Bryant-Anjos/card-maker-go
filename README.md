@@ -36,6 +36,9 @@ variável `CARDMAKER_CHROME` e depois no `PATH` (`chrome-headless-shell`, `chrom
 `brave-browser`, ...). Reexecutar o `build` só renderiza o que mudou (`-force` ignora o cache);
 `-renderer fake` gera retângulos coloridos sem navegador, útil para testar o pipeline.
 
+O WebP sai com perda por padrão, na qualidade 90 (cerca de 11x menor que o PNG, visualmente idêntico); use
+`-webp-quality 100` para WebP sem perda ou um valor menor para arquivos ainda menores.
+
 `testdata/showcase/` usa as artes recortadas do design de referência, para revisão visual;
 `testdata/cards/` usa artes placeholder, para os testes.
 

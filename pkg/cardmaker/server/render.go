@@ -21,12 +21,13 @@ const (
 
 // output is the requested size and format of an image.
 type output struct {
-	scale  int
-	format string
+	scale   int
+	format  string
+	quality int // WebP only
 }
 
 func (s *Server) parseOutput(q url.Values) (output, *apiError) {
-	out := output{scale: 1, format: imgenc.PNG}
+	out := output{scale: 1, format: imgenc.PNG, quality: imgenc.DefaultWebPQuality}
 
 	if raw := q.Get("scale"); raw != "" {
 		scale, err := strconv.Atoi(raw)
@@ -40,6 +41,14 @@ func (s *Server) parseOutput(q url.Values) (output, *apiError) {
 			return output{}, badRequest(fmt.Sprintf("unsupported format %q, use png or webp", raw))
 		}
 		out.format = raw
+	}
+
+	if raw := q.Get("quality"); raw != "" {
+		quality, err := strconv.Atoi(raw)
+		if err != nil || quality < 1 || quality > imgenc.WebPLossless {
+			return output{}, badRequest(fmt.Sprintf("quality must be a whole number from 1 to %d (100 is lossless)", imgenc.WebPLossless))
+		}
+		out.quality = quality
 	}
 
 	return out, nil
@@ -146,7 +155,7 @@ func (s *Server) respondImage(w http.ResponseWriter, pngData []byte, renderErr e
 	if err := imgenc.CheckPNGSize(pngData, size.Width*out.scale, size.Height*out.scale); err != nil {
 		return err
 	}
-	encoded, err := imgenc.Encode(pngData, out.format)
+	encoded, err := imgenc.Encode(pngData, out.format, imgenc.Options{WebPQuality: out.quality})
 	if err != nil {
 		return err
 	}

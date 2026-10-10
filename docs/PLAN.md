@@ -158,6 +158,8 @@ MVP útil = fases 1 a 5.
   - Verificação de ponta a ponta com o binário real, Chrome e `curl`: carta padrão em 2x, full art em WebP, verso, erros, 12 requisições simultâneas, upload de 25 MB (413) e desligamento sem processos órfãos. A imagem da API é idêntica pixel a pixel à do CLI.
   - Bug encontrado ao testar o snippet JavaScript: `fetch`/`FormData` envia um `Blob` como parte de **arquivo**, e o servidor só aceitava o `card` como campo de texto. Corrigido (aceita os dois), com teste de regressão.
   - Fora do escopo: cache de imagens, TLS (use um proxy reverso), limite de taxa por cliente, CORS e `Dockerfile`.
+- [x] **Extra — WebP com compressão**: o WebP passou a ser **com perda por padrão (qualidade 90)**, com `-webp-quality` no CLI (1-99 com perda, 100 sem perda), `WebPQuality` no pipeline e `quality` na API. Trocado o encoder em Go puro (só sem perda) por `gen2brain/webp` (libwebp compilada para WASM e traduzida para Go: sem cgo nem biblioteca do sistema). Medido com o decodificador oficial do libwebp em 10 cartas reais: 2x cai de 20,5 MB (PNG) para 1,84 MB (**11x menor**), PSNR mínimo de 41,2 dB e canal alfa exato (cantos e brilho intactos). A qualidade entra na chave de cache. Concorrência verificada (32 codificações em paralelo, sem races, saída determinística, sem vazamento).
+  - Achado: os decodificadores de WebP em Go (`x/image/webp` e o da própria `gen2brain/webp`) convertem a cor do WebP com perda de forma diferente do libwebp (faixa limitada BT.601 vs. faixa total), deslocando as cores em até ~9 níveis; uma primeira medição com eles dava falsos 28 dB. Documentado em INTEGRACAO.md para quem consome em Go.
 
 ## 11. Contrato de dados (resumo da fase 2)
 
