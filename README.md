@@ -131,8 +131,11 @@ Limitações conhecidas: a API não tem limite de taxa por cliente nem CORS (use
 cartas removidas não são apagados da saída; o tema `default` usa a proporção 5:7, mais larga que a da imagem de
 referência. Veja o [plano](docs/PLAN.md) e a [API](docs/API.md) para o detalhe.
 
-O projeto ainda não tem uma licença definida. As fontes do tema `default` (Lora e Source Sans 3) são livres
-(OFL) e trazem as licenças em `themes/default/fonts/`.
+## Licença
+
+O código é distribuído sob a [licença MIT](LICENSE). As fontes do tema `default` (Lora e Source Sans 3) são
+livres (OFL) e trazem as licenças em `themes/default/fonts/`. As ilustrações dos exemplos servem apenas para
+demonstração (veja a nota na seção "Veja o que ele gera").
 
 ## Desenvolvimento
 

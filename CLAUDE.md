@@ -51,12 +51,15 @@ estar, atualize a documentação na mesma mudança, antes de commitar.**
 | erro comum ou armadilha descoberta | `docs/SOLUCAO-DE-PROBLEMAS.md` |
 | entrega relevante | seção "Progresso" de `docs/PLAN.md` |
 | visão geral, recursos, início rápido | `README.md` |
-| documento novo | índice em `docs/README.md` |
+| documento novo | índice em `docs/README.md` **e** `nav` em `mkdocs.yml` |
 
 Os testes de `internal/docscheck` falham se uma flag, rota, pacote, schema ou alvo do `make` ficar sem
 documentação, se houver link ou âncora quebrada, documento fora do índice, imagem sem uso, ou se as imagens
 ficarem velhas em relação ao tema (`docs/images/SOURCE_HASH`). A mensagem de erro diz onde documentar. Eles
 não substituem o seu julgamento: se o **sentido** de algo mudou, revise o texto mesmo sem teste falhando.
+
+O site da documentação (GitHub Pages) é montado de `docs/` com o MkDocs (`mkdocs.yml`, `make docs-site`); links
+para fora de `docs/` usam a URL do GitHub. O CI (`.github/workflows/ci.yml`) roda `make check` equivalente.
 
 Antes de commitar: `make check` verde, documentação atualizada, `make docs-images` se o tema `default` ou os
 dados de `testdata/showcase` mudaram.

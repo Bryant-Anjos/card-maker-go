@@ -6,6 +6,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"os"
 	"strings"
 	"sync"
 	"testing"
@@ -71,7 +72,7 @@ func newRenderer(t *testing.T) *chrome.Renderer {
 	if _, err := chrome.FindBrowser(""); err != nil {
 		t.Skipf("no browser available: %v", err)
 	}
-	r, err := chrome.New(chrome.Options{})
+	r, err := chrome.New(chrome.Options{NoSandbox: chrome.NoSandboxFromEnv(os.Getenv)})
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}

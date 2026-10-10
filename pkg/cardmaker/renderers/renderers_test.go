@@ -1,6 +1,7 @@
 package renderers_test
 
 import (
+	"os"
 	"strings"
 	"testing"
 
@@ -40,7 +41,7 @@ func TestOpenChrome(t *testing.T) {
 		t.Skipf("no browser available: %v", err)
 	}
 
-	r, closeFn, err := renderers.Open(renderers.Chrome, renderers.Options{})
+	r, closeFn, err := renderers.Open(renderers.Chrome, renderers.Options{NoSandbox: chrome.NoSandboxFromEnv(os.Getenv)})
 	if err != nil {
 		t.Fatalf("Open(chrome): %v", err)
 	}

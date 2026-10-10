@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 	"testing"
@@ -242,6 +243,31 @@ func TestAssistantInstructionsPointToTheDocumentationRules(t *testing.T) {
 	for _, want := range []string{"docs/README.md", "make check"} {
 		if !strings.Contains(claude, want) {
 			t.Errorf("CLAUDE.md must mention %q", want)
+		}
+	}
+}
+
+// siteNavEntry matches the page files listed in the navigation of mkdocs.yml.
+var siteNavEntry = regexp.MustCompile(`(?m)^\s*-\s+[^:\n]+:\s+([A-Za-z0-9_-]+\.md)\s*$`)
+
+func TestSiteNavigationListsEveryDocument(t *testing.T) {
+	nav := read(t, "mkdocs.yml")
+	listed := map[string]bool{}
+	for _, m := range siteNavEntry.FindAllStringSubmatch(nav, -1) {
+		listed[m[1]] = true
+	}
+
+	var unlisted []string
+	for _, doc := range walk(t, "docs", func(rel string) bool { return isMarkdown(rel) && path.Dir(rel) == "docs" }) {
+		if name := path.Base(doc); !listed[name] {
+			unlisted = append(unlisted, name)
+		}
+	}
+	report(t, "documents", "the nav of mkdocs.yml (documentation site)", "add each one to the nav section", unlisted)
+
+	for name := range listed {
+		if !exists("docs/" + name) {
+			t.Errorf("mkdocs.yml nav lists %s, which does not exist in docs/", name)
 		}
 	}
 }

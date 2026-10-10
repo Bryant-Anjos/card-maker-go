@@ -4,7 +4,7 @@ Este documento define o que o Card Maker Go **lê** (cartas e tema) e o que ele 
 `manifest.json`). É a única coisa que outros projetos precisam conhecer: o programa é um detalhe de
 implementação, o contrato é o que fica.
 
-As definições formais estão em [`schema/`](../schema) (`cards.schema.json`, `theme.schema.json`,
+As definições formais estão em [`schema/`](https://github.com/Bryant-Anjos/card-maker-go/tree/main/schema) (`cards.schema.json`, `theme.schema.json`,
 `manifest.schema.json` e `defs.schema.json`, que guarda as definições compartilhadas) (JSON Schema, rascunho 2020-12) e são embutidas
 no binário (`schema.FS`). Um teste garante que os schemas e a validação em Go aceitam e rejeitam
 exatamente os mesmos documentos.

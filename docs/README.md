@@ -1,6 +1,6 @@
 # Documentação do Card Maker Go
 
-Esta é a porta de entrada da documentação. Se você está chegando agora, comece pelo [README](../README.md) do
+Esta é a porta de entrada da documentação. Se você está chegando agora, comece pelo [README](https://github.com/Bryant-Anjos/card-maker-go#readme) do
 projeto e volte aqui para o que precisar.
 
 ## Índice
@@ -18,7 +18,7 @@ projeto e volte aqui para o que precisar.
 | [SOLUCAO-DE-PROBLEMAS.md](SOLUCAO-DE-PROBLEMAS.md) | todos | Sintomas e mensagens de erro reais, com causa e solução. |
 | [PLAN.md](PLAN.md) | quem quer o histórico | Plano original, decisões iniciais e o registro do progresso de cada entrega. |
 
-Imagens: [`images/`](images) (geradas, não desenhadas à mão) e o
+Imagens: as de `docs/images/` são geradas pela ferramenta, não desenhadas à mão; há também o
 [design de referência](reference/card-design-reference.png) que o tema `default` reproduz.
 
 ## Como esta documentação é mantida

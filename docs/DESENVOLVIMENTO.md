@@ -10,6 +10,7 @@ Como preparar o ambiente, rodar os testes e contribuir. Para entender o código,
 | Go (versão em `.tool-versions`) | compilar e testar | `asdf install` lê o arquivo. |
 | Um navegador Chromium | renderizar de verdade e rodar os testes visuais | Passe `CARDMAKER_CHROME=/caminho/do/navegador` ou deixe no `PATH`. Sem navegador, os testes que dependem dele são **pulados**, não falham. |
 | Python 3 com Pillow e a fonte DejaVu Sans | só `make docs-images` | Não é necessário para compilar nem testar. |
+| Python 3 com as ferramentas de `requirements-docs.txt` (MkDocs Material) | só `make docs-site` | Para ver o site da documentação localmente. |
 | Docker | só para a imagem ([DOCKER.md](DOCKER.md)) | Opcional. |
 
 ```bash
@@ -33,6 +34,7 @@ bin/cardmaker version
 | `make golden` | Regrava as imagens de referência dos testes visuais depois de uma mudança **intencional** no visual. |
 | `make docs-images` | Re-renderiza as imagens da documentação com a ferramenta real e atualiza `docs/images/SOURCE_HASH`. |
 | `make docs-check` | Roda só os testes que verificam a documentação. |
+| `make docs-site` | Monta o site da documentação em `site/`, como o GitHub Pages faz (`--strict`: link quebrado falha). Precisa de `pip install -r requirements-docs.txt`. |
 
 ## Testes
 
@@ -44,6 +46,8 @@ e de regressão visual.
 - **Race detector**: `go test -race ./...` precisa passar (o pipeline e a API usam concorrência). É mais lento
   por causa do WebP, que é código WebAssembly traduzido para Go.
 - **Sem navegador**: `CARDMAKER_CHROME=/inexistente go test ./...` deve passar; os testes do navegador se pulam.
+- **Sandbox do navegador nos testes**: os testes respeitam `CARDMAKER_CHROME_NO_SANDBOX` (veja [CLI.md](CLI.md#variáveis-de-ambiente)),
+  útil onde o sandbox do Chrome é bloqueado, como em contêineres e no CI.
 - **Imagens de referência (goldens)**: `pkg/cardmaker/render/chrome/golden_test.go` renderiza amostras com o
   tema `default` e compara com `testdata/golden/default/`. Com o **mesmo navegador** que gerou as imagens
   (registrado em `testdata/golden/default/RENDERER`) a comparação é estrita (ruído de até 8 níveis por pixel e média
@@ -86,7 +90,7 @@ deveria estar, atualiza a documentação na mesma mudança**. A tabela diz onde:
 | alvos do `make`, ferramentas ou o fluxo de desenvolvimento | este documento |
 | um erro comum ou uma armadilha descoberta | [SOLUCAO-DE-PROBLEMAS.md](SOLUCAO-DE-PROBLEMAS.md) |
 | uma entrega relevante | a seção de progresso do [PLAN.md](PLAN.md) |
-| a visão geral, os recursos ou o início rápido | o [README](../README.md) |
+| a visão geral, os recursos ou o início rápido | o [README](https://github.com/Bryant-Anjos/card-maker-go#readme) |
 | um documento novo | o índice [docs/README.md](README.md) |
 
 Três mecanismos ajudam a não esquecer:
@@ -103,6 +107,21 @@ Três mecanismos ajudam a não esquecer:
 Os testes só pegam o que é verificável por máquina (existência, links, hash). Se a **explicação** de algo mudou
 de sentido, quem altera o código precisa revisar o texto, conferindo os exemplos: eles devem ser executados,
 não só escritos.
+
+## Integração contínua e publicação
+
+O repositório tem dois fluxos de trabalho do GitHub Actions em `.github/workflows/`:
+
+- **`ci.yml`** (a cada push na `main` e em pull requests): `go vet`, todos os testes com o detector de race e
+  a cobertura total, mais a montagem do site da documentação com `--strict`. No runner, as imagens de
+  referência visuais valem só com tolerância (o Chrome de lá não é o que as gerou) e o sandbox do navegador
+  fica desligado (`CARDMAKER_CHROME_NO_SANDBOX=1`), porque a máquina é descartável.
+- **`pages.yml`** (push na `main` que mexa em `docs/`, `mkdocs.yml` ou nos requisitos): monta o site com
+  MkDocs Material e o publica no GitHub Pages, em <https://bryant-anjos.github.io/card-maker-go/>.
+
+O menu do site fica em `mkdocs.yml`: **todo documento novo de `docs/` precisa entrar no `nav`** (um teste
+verifica). Links para fora de `docs/` (como o `README.md` da raiz) devem usar a URL do GitHub, porque o site
+só contém a pasta `docs/`.
 
 ## Ferramentas de desenvolvimento
 

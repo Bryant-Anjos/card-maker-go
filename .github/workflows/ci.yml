@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+
+      # Os testes de renderização usam o Chrome que já vem no runner. Nesses
+      # runners o sandbox do Chrome costuma ser bloqueado (user namespaces),
+      # então ele é desligado só aqui: a máquina é descartável.
+      - name: Navegador para os testes de renderização
+        run: |
+          echo "CARDMAKER_CHROME=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          echo "CARDMAKER_CHROME_NO_SANDBOX=1" >> "$GITHUB_ENV"
+
+      - name: go vet
+        run: go vet ./...
+
+      # Inclui os testes de documentação (internal/docscheck) e o detector de
+      # race. As imagens de referência valem com tolerância: o Chrome do runner
+      # não é o que as gerou.
+      - name: Testes com cobertura e race detector
+        run: go test -race -count=1 -coverprofile=coverage.out ./...
+
+      - name: Cobertura total
+        run: go tool cover -func=coverage.out | tail -1
+
+  docs:
+    name: Site da documentação
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-docs.txt
+
+      - run: pip install -r requirements-docs.txt
+
+      # --strict: link ou âncora quebrados falham o build.
+      - run: mkdocs build --strict

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"image"
 	"image/png"
+	"os"
 	"testing"
 
 	"github.com/chromedp/chromedp"
@@ -66,7 +67,7 @@ func TestDefaultThemeFitsLongNames(t *testing.T) {
 	if _, err := FindBrowser(""); err != nil {
 		t.Skipf("no browser available: %v", err)
 	}
-	r, err := New(Options{})
+	r, err := New(Options{NoSandbox: NoSandboxFromEnv(os.Getenv)})
 	if err != nil {
 		t.Fatal(err)
 	}

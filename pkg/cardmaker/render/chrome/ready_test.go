@@ -3,6 +3,7 @@ package chrome_test
 import (
 	"context"
 	"image/color"
+	"os"
 	"testing"
 	"testing/fstest"
 	"time"
@@ -71,7 +72,7 @@ func TestRendererTimesOutWhenCardReadyNeverResolves(t *testing.T) {
 	if _, err := chrome.FindBrowser(""); err != nil {
 		t.Skipf("no browser available: %v", err)
 	}
-	r, err := chrome.New(chrome.Options{Timeout: 700 * time.Millisecond})
+	r, err := chrome.New(chrome.Options{Timeout: 700 * time.Millisecond, NoSandbox: chrome.NoSandboxFromEnv(os.Getenv)})
 	if err != nil {
 		t.Fatal(err)
 	}

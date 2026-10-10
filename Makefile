@@ -1,4 +1,4 @@
-.PHONY: build test vet cover check testdata-art theme-frames golden docs-images docs-check
+.PHONY: build test vet cover check testdata-art theme-frames golden docs-images docs-check docs-site
 
 build:
 	go build -o bin/cardmaker ./cmd/cardmaker
@@ -37,3 +37,8 @@ docs-images:
 # Fails when the documentation drifted from the code.
 docs-check:
 	go test -count=1 ./internal/docscheck/
+
+# Monta o site da documentação em site/ como o GitHub Pages faz (precisa de
+# `pip install -r requirements-docs.txt`). --strict falha com link quebrado.
+docs-site:
+	python3 -m mkdocs build --strict

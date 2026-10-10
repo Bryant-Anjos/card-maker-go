@@ -1,0 +1,74 @@
+# Configuração do site da documentação (GitHub Pages). Para montar localmente:
+#   pip install -r requirements-docs.txt && make docs-site
+# Todo documento de docs/ precisa estar em `nav` (um teste verifica isso).
+site_name: Card Maker Go
+site_description: Gerador de cartas colecionáveis a partir de dados, ilustrações e temas
+site_url: https://bryant-anjos.github.io/card-maker-go/
+repo_url: https://github.com/Bryant-Anjos/card-maker-go
+repo_name: Bryant-Anjos/card-maker-go
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+site_dir: site
+# O fingerprint das imagens é arquivo de controle do repositório, não conteúdo do site.
+exclude_docs: |
+  images/SOURCE_HASH
+
+theme:
+  name: material
+  language: pt-BR
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Mudar para o tema claro
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: Mudar para o tema escuro
+  features:
+    - navigation.sections
+    - navigation.top
+    - toc.follow
+    - content.code.copy
+    - search.highlight
+
+nav:
+  - Início: README.md
+  - Usar:
+      - Contrato de dados: CONTRATO.md
+      - Integração: INTEGRACAO.md
+      - Temas: TEMAS.md
+      - Linha de comando: CLI.md
+      - API HTTP: API.md
+      - Docker: DOCKER.md
+  - Entender e contribuir:
+      - Arquitetura: ARQUITETURA.md
+      - Desenvolvimento: DESENVOLVIMENTO.md
+      - Solução de problemas: SOLUCAO-DE-PROBLEMAS.md
+  - Plano e histórico: PLAN.md
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+      # Âncoras no estilo do GitHub (mantêm os acentos), as mesmas que os
+      # links dos documentos usam no repositório.
+      slugify: !!python/object/apply:pymdownx.slugs.slugify {kwds: {case: lower}}
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+# Com `mkdocs build --strict`, qualquer link ou âncora quebrados falham o build.
+validation:
+  links:
+    not_found: warn
+    unrecognized_links: warn
+    anchors: warn
