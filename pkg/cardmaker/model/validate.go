@@ -57,8 +57,13 @@ func checkIdentifier(p *problems, field, value string) {
 	}
 }
 
+// IsValidLocale reports whether code looks like a locale code such as "pt-BR".
+func IsValidLocale(code string) bool {
+	return localePattern.MatchString(code)
+}
+
 func checkLocale(p *problems, field, value string) {
-	if !localePattern.MatchString(value) {
+	if !IsValidLocale(value) {
 		p.addf(field, "invalid locale code %q", value)
 	}
 }
