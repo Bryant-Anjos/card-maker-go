@@ -81,6 +81,60 @@
         "pt-BR": "Full art com nome extremo."
       },
       "art": "art/drakarion.png"
+    },
+    {
+      "id": "fit-desc-long",
+      "number": 207,
+      "rarity": "uncommon",
+      "element": "nature",
+      "name": {
+        "pt-BR": "Cervallis"
+      },
+      "description": {
+        "pt-BR": "Habita regiões verdes e é conhecido por sua grande agilidade entre as árvores, guiando viajantes perdidos até a clareira mais próxima antes do anoitecer."
+      },
+      "art": "art/cervallis.png"
+    },
+    {
+      "id": "fit-desc-extreme",
+      "number": 208,
+      "rarity": "legendary",
+      "element": "fire",
+      "name": {
+        "pt-BR": "Drakarion"
+      },
+      "description": {
+        "pt-BR": "Uma lenda antiga conta que o fogo nunca se apagou nas montanhas onde ele dorme, e que quem ouve o seu rugido nas noites de inverno esquece o próprio nome por sete dias; os viajantes que voltaram juraram ter visto o céu inteiro arder em silêncio."
+      },
+      "art": "art/drakarion.png"
+    },
+    {
+      "id": "fit-desc-long-fullart",
+      "number": 209,
+      "rarity": "rare",
+      "element": "dark",
+      "variant": "fullart",
+      "name": {
+        "pt-BR": "Lunaris"
+      },
+      "description": {
+        "pt-BR": "Habita regiões verdes e é conhecido por sua grande agilidade entre as árvores, guiando viajantes perdidos até a clareira mais próxima antes do anoitecer."
+      },
+      "art": "art/lunaris.png"
+    },
+    {
+      "id": "fit-desc-extreme-fullart",
+      "number": 210,
+      "rarity": "epic",
+      "element": "light",
+      "variant": "fullart",
+      "name": {
+        "pt-BR": "Aureon"
+      },
+      "description": {
+        "pt-BR": "Uma lenda antiga conta que o fogo nunca se apagou nas montanhas onde ele dorme, e que quem ouve o seu rugido nas noites de inverno esquece o próprio nome por sete dias; os viajantes que voltaram juraram ter visto o céu inteiro arder em silêncio."
+      },
+      "art": "art/aureon.png"
     }
   ]
 }

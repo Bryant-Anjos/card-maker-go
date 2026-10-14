@@ -81,11 +81,16 @@ em arquivos e use `{{inline "arquivo.svg"}}` nos dois templates (o tema `default
   para máquina; fontes remotas deixam o build lento e não reprodutível.
 - **Evite recursos remotos** em geral (imagens, CSS, scripts de CDN) pelo mesmo motivo.
 - **Recorte a arte com `object-fit: cover`**: a proporção das ilustrações não é validada.
-- **Limite os textos**: nome em uma linha com `text-overflow: ellipsis` e descrição com
-  `-webkit-line-clamp`, para que um texto longo nunca invada outros elementos.
+- **Limite os textos**: nome em uma linha com `text-overflow: ellipsis` e descrição com uma altura máxima
+  (`max-height`), para que um texto longo nunca invada outros elementos.
 - **Ajuste automático de fonte**: o tema `default` inclui `fit.js`, que encolhe qualquer elemento marcado com
-  `data-fit` até o texto caber em uma linha, de um em um pixel, até `data-fit-min`. Só se o texto ainda não
-  couber no mínimo é que o CSS corta com reticências. Elementos que já cabem não são tocados.
+  `data-fit` até o texto caber, de um em um pixel, até `data-fit-min`. Só se o texto ainda não couber no mínimo é
+  que ele é cortado com reticências. Elementos que já cabem não são tocados. Dois modos:
+  - `data-fit` (o nome): o texto cabe em **uma linha** (não passa da largura da caixa); no mínimo, o CSS corta com
+    `text-overflow: ellipsis`.
+  - `data-fit="lines"` (a descrição): o texto pode usar **quantas linhas a altura da caixa comportar** (o elemento
+    precisa de um `max-height`); texto menor cabe em mais linhas. No mínimo, o `fit.js` define
+    `-webkit-line-clamp` com as linhas que cabem, e a última termina em reticências.
 - **Deixe margem para efeitos** (brilho, ornamentos que saem da borda) dentro do canvas: o que passar do
   tamanho do tema é cortado.
 - Não use `<use href="#id">` esperando que os clones herdem classes CSS: no Chrome isso não é confiável.
@@ -118,6 +123,7 @@ Elétrico, Terra, Gelo e Místico.
 | Fontes | Lora (nome) e Source Sans 3 (textos), licença OFL, em `fonts/` com as licenças. |
 | Verso | `back.html.tmpl`: fundo azul-marinho, moldura dourada e rosa dos ventos. |
 | Nome longo | O nome começa em 62 px e encolhe até **28 px** para caber (`data-fit-min` no template). Medido: nomes de até ~36 caracteres cabem inteiros mesmo com o ícone de elemento ao lado (27 caracteres → 37 px, 31 → 32 px, 36 → 28 px); acima disso, reticências. |
+| Descrição longa | A descrição começa em 39 px e ocupa até 3 linhas. Se não couber, encolhe até **26 px** (`data-fit-min` no template), quando passa a caber em até 4 linhas na mesma altura; acima disso, a última linha termina em reticências. Descrições que já cabiam em 3 linhas não mudam. |
 | Moldura compartilhada | `frame.svg` (faixa metálica e filetes), inserida pelos dois layouts. |
 | Variante `fullart` | `fullart.html.tmpl`: a arte ocupa toda a janela da moldura (682×982), o texto fica direto sobre a arte, sem caixa, em branco com contorno preto (`paint-order: stroke fill`, para o contorno crescer para fora sem afinar as letras), e um brilho holográfico na cor da raridade marca a versão especial. Moldura, ornamentos, brilho e gema são os da raridade, então serve para todas. **Arte recomendada: retrato, proporção ≈ 0,69 (ex.: 750×1050 ou 1500×2100 para 2x)**; arte quadrada é ampliada e cortada nas laterais. |
 

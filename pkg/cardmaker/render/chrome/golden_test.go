@@ -52,6 +52,8 @@ var goldenSets = []struct {
 	{"longnames.json", []string{
 		"cards/fit-medium.png", "cards/fit-long.png", "cards/fit-edge.png", "cards/fit-extreme.png",
 		"cards/fit-long-fullart.png", "cards/fit-extreme-fullart.png",
+		"cards/fit-desc-long.png", "cards/fit-desc-extreme.png",
+		"cards/fit-desc-long-fullart.png", "cards/fit-desc-extreme-fullart.png",
 	}},
 }
 

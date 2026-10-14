@@ -88,7 +88,12 @@ html, body { margin: 0; width: 100%; height: 100%; background: transparent; over
   color: #c9d0dc;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  /* The box holds 3 lines at the base size (plus a few pixels the line boxes
+   * leave empty below the letters) and keeps that height when fit.js shrinks
+   * the font: smaller text then fits in more lines. If the text does not fit
+   * even at the smallest size, fit.js sets -webkit-line-clamp so the last line
+   * ends with an ellipsis. */
+  max-height: calc(3 * 1.3 * 39px + 6px);
   overflow: hidden;
 }
 
