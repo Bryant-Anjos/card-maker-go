@@ -28,6 +28,11 @@ type Options struct {
 	WebPQuality int      // 1-99 lossy, 100 lossless; default imgenc.DefaultWebPQuality
 	Concurrency int      // parallel cards, default 4
 	Force       bool     // ignore the cache and render everything
+
+	// HashedNames writes each image as <name>.<hash>.<ext>, where hash is the
+	// first 8 hex digits of the sha256 of the file, and removes images of older
+	// generations from the output directory. See hashed.go.
+	HashedNames bool
 }
 
 // normalized validates the options and fills in defaults. It never mutates

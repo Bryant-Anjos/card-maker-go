@@ -37,6 +37,15 @@ func (c *cache) matches(name, key string) bool {
 	return c.keys[name] == key
 }
 
+func (c *cache) get(name string) (string, bool) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	value, ok := c.keys[name]
+
+	return value, ok
+}
+
 func (c *cache) set(name, key string) {
 	c.mu.Lock()
 	defer c.mu.Unlock()

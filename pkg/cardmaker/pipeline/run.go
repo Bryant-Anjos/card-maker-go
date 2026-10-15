@@ -130,6 +130,11 @@ func (b *build) run(ctx context.Context) (Result, error) {
 	if err := writeManifest(filepath.Join(b.outDir, manifestFileName), manifest); err != nil {
 		return Result{}, err
 	}
+	if b.opts.HashedNames {
+		if err := removeOrphans(b.outDir, manifest); err != nil {
+			return Result{}, err
+		}
+	}
 
 	return Result{
 		OutDir:   b.outDir,
@@ -214,23 +219,25 @@ func (b *build) buildCard(ctx context.Context, input cardInput) ([]model.Image, 
 	key := keyOf(version, b.renderer.Version(), b.in.themeHash, string(cardJSON), hashBytes(art),
 		joinInts(b.opts.Scales), fmt.Sprint(b.opts.Formats), strconv.Itoa(b.opts.WebPQuality))
 
-	if b.upToDate(cacheName, key, planned) {
+	if images, ok := b.upToDate(cacheName, key, planned); ok {
 		b.skipped.Add(int64(len(b.opts.Scales)))
 
-		return planned, nil
+		return images, nil
 	}
 
 	renderScale := func(scale int) ([]byte, error) {
 		return b.renderer.RenderCard(ctx, renderCardRequest(b.in, card, art, scale))
 	}
-	if err := b.renderScales(planned, renderScale); err != nil {
+	images, err := b.renderScales(planned, renderScale)
+	if err != nil {
 		return nil, fmt.Errorf("card %q: %w", card.ID, err)
 	}
 
 	b.cache.set(cacheName, key)
+	b.recordFiles(cacheName, key, images)
 	b.rendered.Add(int64(len(b.opts.Scales)))
 
-	return planned, nil
+	return images, nil
 }
 
 func (b *build) buildBack(ctx context.Context) ([]model.Image, error) {
@@ -238,69 +245,96 @@ func (b *build) buildBack(ctx context.Context) ([]model.Image, error) {
 	key := keyOf(version, backBaseName, b.renderer.Version(), b.in.themeHash,
 		joinInts(b.opts.Scales), fmt.Sprint(b.opts.Formats), strconv.Itoa(b.opts.WebPQuality))
 
-	if b.upToDate(backBaseName, key, planned) {
+	if images, ok := b.upToDate(backBaseName, key, planned); ok {
 		b.skipped.Add(int64(len(b.opts.Scales)))
 
-		return planned, nil
+		return images, nil
 	}
 
 	renderScale := func(scale int) ([]byte, error) {
 		return b.renderer.RenderBack(ctx, render.BackRequest{Theme: b.in.theme, Scale: scale})
 	}
-	if err := b.renderScales(planned, renderScale); err != nil {
+	images, err := b.renderScales(planned, renderScale)
+	if err != nil {
 		return nil, fmt.Errorf("back: %w", err)
 	}
 
 	b.cache.set(backBaseName, key)
+	b.recordFiles(backBaseName, key, images)
 	b.rendered.Add(int64(len(b.opts.Scales)))
 
-	return planned, nil
+	return images, nil
 }
 
-func (b *build) upToDate(cacheName, key string, planned []model.Image) bool {
+// upToDate reports whether an output can be reused and, if so, returns its
+// images (with the recorded names in a hashed build).
+func (b *build) upToDate(cacheName, key string, planned []model.Image) ([]model.Image, bool) {
 	if b.opts.Force || !b.cache.matches(cacheName, key) {
-		return false
+		return nil, false
 	}
 
-	paths := make([]string, len(planned))
-	for i, img := range planned {
+	images := planned
+	if b.opts.HashedNames {
+		recorded, ok := b.recordedImages(cacheName, key, planned)
+		if !ok {
+			return nil, false
+		}
+		images = recorded
+	}
+
+	paths := make([]string, len(images))
+	for i, img := range images {
 		paths[i] = img.Path
 	}
-
-	return allExist(b.outDir, paths)
-}
-
-// renderScales renders each scale once and writes it in every format.
-func (b *build) renderScales(planned []model.Image, renderScale func(scale int) ([]byte, error)) error {
-	byScale := map[int][]model.Image{}
-	for _, img := range planned {
-		byScale[img.Scale] = append(byScale[img.Scale], img)
+	if !allExist(b.outDir, paths) {
+		return nil, false
 	}
 
+	return images, true
+}
+
+// renderScales renders each scale once and writes it in every format. It
+// returns the images with their final paths, which carry the content hash when
+// HashedNames is set.
+func (b *build) renderScales(planned []model.Image, renderScale func(scale int) ([]byte, error)) ([]model.Image, error) {
+	byScale := map[int][]int{}
+	for i, img := range planned {
+		byScale[img.Scale] = append(byScale[img.Scale], i)
+	}
+	result := make([]model.Image, len(planned))
+	copy(result, planned)
+
 	for _, scale := range b.opts.Scales {
-		images := byScale[scale]
+		indexes := byScale[scale]
+		first := planned[indexes[0]]
 
 		pngData, err := renderScale(scale)
 		if err != nil {
-			return fmt.Errorf("render at %dx: %w", scale, err)
+			return nil, fmt.Errorf("render at %dx: %w", scale, err)
 		}
-		if err := imgenc.CheckPNGSize(pngData, images[0].Width, images[0].Height); err != nil {
-			return fmt.Errorf("render at %dx: %w", scale, err)
+		if err := imgenc.CheckPNGSize(pngData, first.Width, first.Height); err != nil {
+			return nil, fmt.Errorf("render at %dx: %w", scale, err)
 		}
 
 		encoded, err := imgenc.EncodeAll(pngData, b.opts.Formats, imgenc.Options{WebPQuality: b.opts.WebPQuality})
 		if err != nil {
-			return err
+			return nil, err
 		}
-		for _, img := range images {
-			target := filepath.Join(b.outDir, filepath.FromSlash(img.Path))
-			if err := writeFileAtomic(target, encoded[img.Format]); err != nil {
-				return fmt.Errorf("write %s: %w", img.Path, err)
+		for _, i := range indexes {
+			img := result[i]
+			data := encoded[img.Format]
+			if b.opts.HashedNames {
+				img.Path = hashedPath(img.Path, img.Format, data)
 			}
+			target := filepath.Join(b.outDir, filepath.FromSlash(img.Path))
+			if err := writeFileAtomic(target, data); err != nil {
+				return nil, fmt.Errorf("write %s: %w", img.Path, err)
+			}
+			result[i] = img
 		}
 	}
 
-	return nil
+	return result, nil
 }
 
 func renderCardRequest(in inputs, card i18n.ResolvedCard, art []byte, scale int) render.CardRequest {
