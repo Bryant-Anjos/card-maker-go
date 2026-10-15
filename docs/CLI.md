@@ -46,6 +46,7 @@ imagens. Os dados são validados **antes** de qualquer renderização, e só o q
 | `-webp-quality` | `90` | Qualidade do WebP: 1 a 99 com perda, `100` sem perda (exato, bem maior e mais lento). |
 | `-concurrency` | `4` | Cartas renderizadas em paralelo. |
 | `-force` | desligado | Ignora o cache e renderiza tudo de novo. |
+| `-hashed-names` | desligado | Grava cada imagem como `<nome>.<hash>.<ext>` (veja abaixo) e apaga as imagens de gerações anteriores. |
 | `-renderer` | `chrome` | `chrome` (real) ou `fake` (retângulos coloridos, sem navegador; útil para testar o pipeline). |
 | `-chrome` | | Executável do navegador. Padrão: variável `CARDMAKER_CHROME`, depois o `PATH`. |
 | `-no-sandbox` | `$CARDMAKER_CHROME_NO_SANDBOX` | Roda o navegador sem o sandbox. Só para contêineres (veja [DOCKER.md](DOCKER.md#o-sandbox-do-chromium)). |
@@ -58,6 +59,25 @@ cardmaker build -cards testdata/showcase/cards.json -theme themes/default \
 
 A segunda execução, sem mudanças, mostra `rendered 0, skipped 12`. O resumo conta imagens por escala
 (5 cartas + verso, em 2 escalas = 12); os formatos saem da mesma renderização.
+
+### Nomes com hash
+
+Com a flag, cada imagem (cartas e verso, todas as escalas e formatos) é gravada com o hash do **conteúdo** no
+nome, na mesma pasta: `back.3fa9c1d2.webp`, `back@2x.8b41e07a.webp`, `cards/vulpin.0c5d9e11.webp`. O hash são os
+8 primeiros caracteres hexadecimais (minúsculos) do sha256 do arquivo. O `path` de cada imagem no
+`manifest.json` passa a ser o nome com hash; os outros campos não mudam. Arte que mudou ganha uma URL nova e a
+que não mudou mantém a mesma, então CDNs e caches de cliente que guardam por URL nunca entregam uma imagem velha.
+
+- O cache do build continua valendo: o que não mudou não é renderizado de novo e o arquivo com hash existente
+  é reaproveitado (os nomes ficam registrados em `.cache.json`).
+- Ao fim do build, os arquivos de imagem (`.png` e `.webp`) de `<out>/<locale>/cards/` e os `back*` da raiz de
+  `<out>/<locale>/` que **não estão no manifest novo** são apagados, para a pasta guardar uma geração só. Isso
+  inclui os nomes sem hash de um build anterior. `manifest.json`, `.cache.json`, outros tipos de arquivo,
+  subpastas e qualquer coisa fora de `<out>/<locale>/` nunca são tocados.
+- Sem a flag nada muda e nada é apagado. Voltar a gerar sem a flag escreve os nomes sem hash e **não** apaga os
+  com hash.
+- Quem consome deve sempre ler o `path` do manifest (que, sem cache, é a única coisa a invalidar).
+- O `cardmaker-server` não é afetado: ele renderiza uma imagem por pedido e não grava arquivos.
 
 ## `cardmaker-server`
 

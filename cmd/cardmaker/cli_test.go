@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -106,6 +107,33 @@ func TestBuildWithFakeRenderer(t *testing.T) {
 		"-renderer", "fake", "-scales", "1,2", "-formats", "png")
 	if code != 0 || !strings.Contains(stdout, "rendered 0") || !strings.Contains(stdout, "skipped 12") {
 		t.Errorf("second run: code = %d, stdout = %q, want everything skipped", code, stdout)
+	}
+}
+
+func TestBuildHashedNames(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "out")
+	args := []string{"build", "-cards", cardsFile, "-theme", themeDir, "-out", out,
+		"-renderer", "fake", "-scales", "1", "-formats", "png", "-hashed-names"}
+
+	code, stdout, stderr := execute(args...)
+
+	if code != 0 {
+		t.Fatalf("code = %d, stderr = %s", code, stderr)
+	}
+	if _, err := os.Stat(filepath.Join(out, "pt-BR", "cards", "vulpin.png")); err == nil {
+		t.Error("an unhashed name was written")
+	}
+	manifest, err := os.ReadFile(filepath.Join(out, "pt-BR", "manifest.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !regexp.MustCompile(`"path": "cards/vulpin\.[0-9a-f]{8}\.png"`).Match(manifest) {
+		t.Errorf("manifest does not list the hashed name:\n%s", manifest)
+	}
+
+	code, stdout, _ = execute(args...)
+	if code != 0 || !strings.Contains(stdout, "rendered 0") {
+		t.Errorf("second run: code = %d, stdout = %q", code, stdout)
 	}
 }
 

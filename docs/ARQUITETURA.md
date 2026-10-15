@@ -90,6 +90,11 @@ formatos e qualidade do WebP. Se a chave bate e os arquivos existem, a carta é 
 `<out>/<locale>/.cache.json` (um arquivo ilegível só faz tudo ser refeito). Uma consequência: **atualizar o
 Chrome ou editar qualquer arquivo do tema renderiza tudo de novo**.
 
+Com `-hashed-names` os nomes dependem do conteúdo e não podem ser recalculados sem renderizar, então o cache
+guarda também, por saída, a chave e os nomes finais (entradas `files:<nome>` em `.cache.json`). Só há reuso se
+a chave bate **e** esses nomes existem em disco; um diretório de uma geração sem hash é, portanto, refeito.
+Depois do manifest, `removeOrphans` apaga as imagens que ele não lista (veja [CLI.md](CLI.md#nomes-com-hash)).
+
 ## Decisões de projeto
 
 - **Agnóstico por dados.** Raridades, elementos e variantes de layout são dados do tema, não código.

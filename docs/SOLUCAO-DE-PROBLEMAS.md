@@ -27,6 +27,7 @@ Os sintomas abaixo aparecem com mensagens reais do programa. Se o seu caso não 
 
 | Sintoma | Causa e solução |
 |---|---|
+| O CDN ou o app mostram a arte antiga depois de gerar de novo | O nome do arquivo é o mesmo, então caches por URL guardam a versão velha. Gere com `-hashed-names`: a arte que muda ganha nome novo. |
 | Mudei algo e a carta não atualizou | O cache considera dados, arte, tema, escalas, formatos e qualidade; se mesmo assim algo ficou velho, use `-force`. Apagar `<out>/<locale>/.cache.json` também refaz tudo. |
 | Tudo é renderizado de novo sem eu ter mudado nada | Um arquivo do tema mudou (o hash cobre **todos** os arquivos da pasta) ou o navegador foi atualizado. É o comportamento esperado. |
 | Ficaram arquivos de cartas que removi | Arquivos de cartas removidas não são apagados da saída; o manifest só deixa de listá-los. Apague a pasta de saída se quiser limpar. |

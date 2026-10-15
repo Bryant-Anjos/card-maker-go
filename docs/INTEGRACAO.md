@@ -106,8 +106,10 @@ for _, card := range manifest.Cards {
 - **Ordem**: `cards[]` segue a ordem do arquivo de cartas, útil para listar a coleção por número.
 - **Variantes**: `cards[].variant` (ex.: `fullart`) permite filtrar ou destacar versões especiais
   (`manifest.cards.filter((card) => card.variant === "fullart")`). A imagem já vem com o layout certo.
-- **Cache no cliente**: os nomes dos arquivos não têm hash de conteúdo. Ao republicar, invalide o cache
-  do CDN ou publique em um diretório novo por versão do conteúdo.
+- **Cache no cliente**: por padrão os nomes dos arquivos não têm hash de conteúdo. Gere com `-hashed-names`
+  (`vulpin.0c5d9e11.webp`): arte que muda ganha URL nova, então não é preciso invalidar o cache do CDN, e o
+  `manifest.json` (a única URL fixa) deve ficar sem cache. Sem a flag, invalide o cache do CDN ao republicar
+  ou publique em um diretório novo por versão do conteúdo.
 - **Validação no editor**: coloque `"$schema"` apontando para `schema/*.schema.json` nos seus arquivos de
   cartas e de tema para ter autocompletar e erros em tempo real.
 - **Valide antes de publicar**: `cardmaker validate -cards cards.json -theme themes/default` confere dados,

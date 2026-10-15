@@ -104,6 +104,8 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 	webpQuality := fs.Int("webp-quality", imgenc.DefaultWebPQuality, "WebP quality: 1-99 lossy, 100 lossless")
 	concurrency := fs.Int("concurrency", 0, "cards rendered in parallel (default 4)")
 	force := fs.Bool("force", false, "ignore the cache and render everything")
+	hashedNames := fs.Bool("hashed-names", false,
+		"write each image as <name>.<hash>.<ext> (hash of the content) and remove images of older generations")
 	rendererName := fs.String("renderer", renderers.Chrome, "renderer: chrome or fake")
 	browserPath := fs.String("chrome", "", "browser executable (default: $"+chrome.EnvBrowserPath+", then PATH)")
 	noSandbox := fs.Bool("no-sandbox", chrome.NoSandboxFromEnv(os.Getenv),
@@ -126,6 +128,7 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 	opts.WebPQuality = *webpQuality
 	opts.Concurrency = *concurrency
 	opts.Force = *force
+	opts.HashedNames = *hashedNames
 
 	renderer, closeRenderer, err := renderers.Open(*rendererName, renderers.Options{BrowserPath: *browserPath, NoSandbox: *noSandbox})
 	if err != nil {

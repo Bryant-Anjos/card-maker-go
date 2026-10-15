@@ -121,6 +121,9 @@ out/pt-BR/
 - `<id>.<ext>` é a escala 1x; escalas maiores levam o sufixo `@<n>x` (`vulpin@2x.png`).
 - O tamanho em pixels é sempre `size × escala`.
 - Quem consome **não** deve montar caminhos por convenção: use o `path` de cada imagem no manifest.
+- Com `cardmaker build -hashed-names`, o nome leva o hash do conteúdo antes da extensão
+  (`cards/vulpin@2x.0c5d9e11.webp`, `back.3fa9c1d2.webp`) e o `path` do manifest é esse nome. O formato do
+  `path` não muda (continua um caminho relativo), então o schema é o mesmo. Veja [CLI.md](CLI.md#nomes-com-hash).
 
 ```json
 {
